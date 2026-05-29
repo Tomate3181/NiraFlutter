@@ -54,4 +54,4 @@ final class NiraSupabaseProvider
   }
 }
 
-String _$niraSupabaseHash() => r'290203f9a918ae4ea3a60f1fac9412338403c265';
+String _$niraSupabaseHash() => r'4c82ed148ad40ca2ae846fcef4b96ce071545f74';

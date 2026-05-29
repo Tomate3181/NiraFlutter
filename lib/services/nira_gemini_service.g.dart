@@ -54,4 +54,4 @@ final class NiraGeminiProvider
   }
 }
 
-String _$niraGeminiHash() => r'9e82ab5014e1a146a342a7697ef3e7aacdce6b97';
+String _$niraGeminiHash() => r'7709564824e063a688df3396a6ce089f929035e5';
