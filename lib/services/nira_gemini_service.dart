@@ -9,7 +9,7 @@ part 'nira_gemini_service.g.dart';
 const _geminiApiKey = String.fromEnvironment('GEMINI_API_KEY', defaultValue: '');
 
 @riverpod
-NiraGeminiService niraGemini(NiraGeminiRef ref) {
+NiraGeminiService niraGemini(Ref ref) {
   return NiraGeminiService(_geminiApiKey);
 }
 

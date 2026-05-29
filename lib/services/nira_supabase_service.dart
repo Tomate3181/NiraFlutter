@@ -5,7 +5,7 @@ import '../models/nira_models.dart';
 part 'nira_supabase_service.g.dart';
 
 @riverpod
-NiraSupabaseService niraSupabase(NiraSupabaseRef ref) {
+NiraSupabaseService niraSupabase(Ref ref) {
   return NiraSupabaseService(Supabase.instance.client);
 }
 
