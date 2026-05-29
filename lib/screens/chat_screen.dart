@@ -595,7 +595,10 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
               ),
             ],
           ),
-          Row(
+          Wrap(
+            alignment: WrapAlignment.end,
+            spacing: 10,
+            runSpacing: 8,
             children: [
               ElevatedButton.icon(
                 onPressed: _ativarSOS,
@@ -619,8 +622,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                   ),
                 ),
               ),
-              if (_chatAtivo) ...[
-                const SizedBox(width: 10),
+              if (_chatAtivo)
                 ElevatedButton.icon(
                   onPressed: _isHumanSupport
                       ? null
@@ -651,7 +653,6 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                     ),
                   ),
                 ),
-              ],
             ],
           ),
         ],

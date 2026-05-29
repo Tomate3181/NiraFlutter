@@ -453,12 +453,10 @@ class HomeScreen extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: 48),
-          Flex(
-            direction: isMobile ? Axis.vertical : Axis.horizontal,
-            children: [
-              Expanded(
-                flex: isMobile ? 0 : 1,
-                child: NiraGlassCard(
+          if (isMobile)
+            Column(
+              children: [
+                NiraGlassCard(
                   padding: const EdgeInsets.all(32),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -494,11 +492,8 @@ class HomeScreen extends ConsumerWidget {
                     ],
                   ),
                 ),
-              ),
-              SizedBox(height: isMobile ? 24 : 0, width: isMobile ? 0 : 24),
-              Expanded(
-                flex: isMobile ? 0 : 1,
-                child: NiraGlassCard(
+                const SizedBox(height: 24),
+                NiraGlassCard(
                   padding: const EdgeInsets.all(32),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -528,9 +523,84 @@ class HomeScreen extends ConsumerWidget {
                     ],
                   ),
                 ),
-              ),
-            ],
-          ),
+              ],
+            )
+          else
+            Row(
+              children: [
+                Expanded(
+                  child: NiraGlassCard(
+                    padding: const EdgeInsets.all(32),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Row(
+                          children: [
+                            Icon(
+                              LucideIcons.shield,
+                              color: Colors.greenAccent,
+                              size: 32,
+                            ),
+                            SizedBox(width: 16),
+                            Text(
+                              'USUÁRIOS FINAIS',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 24),
+                        _buildCheckItem(
+                          'Pessoas em situação de violência ou risco.',
+                        ),
+                        _buildCheckItem(
+                          'Indivíduos em vulnerabilidade social e emocional.',
+                        ),
+                        _buildCheckItem(
+                          'Quem precisa de ajuda mas teme se expor.',
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 24),
+                Expanded(
+                  child: NiraGlassCard(
+                    padding: const EdgeInsets.all(32),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Row(
+                          children: [
+                            Icon(
+                              LucideIcons.heartHandshake,
+                              color: Colors.blueAccent,
+                              size: 32,
+                            ),
+                            SizedBox(width: 16),
+                            Text(
+                              'GESTORES E PARCEIROS',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 24),
+                        _buildCheckItem('Psicólogos e assistentes sociais.'),
+                        _buildCheckItem('ONGs e centros de apoio.'),
+                        _buildCheckItem('Autoridades e agentes de segurança.'),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
         ],
       ),
     );
