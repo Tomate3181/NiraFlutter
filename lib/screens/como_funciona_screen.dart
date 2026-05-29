@@ -40,7 +40,7 @@ class ComoFuncionaScreen extends StatelessWidget {
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            Colors.blueAccent.withOpacity(0.05),
+            Colors.blueAccent.withValues(alpha: 0.05),
             Colors.transparent,
           ],
         ),
@@ -50,9 +50,9 @@ class ComoFuncionaScreen extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             decoration: BoxDecoration(
-              color: Colors.blueAccent.withOpacity(0.1),
+              color: Colors.blueAccent.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(32),
-              border: Border.all(color: Colors.blueAccent.withOpacity(0.2)),
+              border: Border.all(color: Colors.blueAccent.withValues(alpha: 0.2)),
             ),
             child: const Text(
               'ARQUITETURA DE PROTEÇÃO',
@@ -129,7 +129,7 @@ class ComoFuncionaScreen extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.05),
+                    color: Colors.white.withValues(alpha: 0.05),
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: Icon(p['icon'] as IconData, color: p['color'] as Color, size: 32),
@@ -205,7 +205,7 @@ class ComoFuncionaScreen extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: (stage['color'] as Color).withOpacity(0.1),
+                    color: (stage['color'] as Color).withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: Icon(stage['icon'] as IconData, color: stage['color'] as Color, size: 32),
@@ -314,7 +314,7 @@ class ComoFuncionaScreen extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [Colors.transparent, Colors.blueAccent.withOpacity(0.05), Colors.transparent],
+          colors: [Colors.transparent, Colors.blueAccent.withValues(alpha: 0.05), Colors.transparent],
         ),
       ),
       child: Column(
