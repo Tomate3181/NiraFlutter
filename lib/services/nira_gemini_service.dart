@@ -1,16 +1,22 @@
 import 'dart:convert';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../models/nira_models.dart';
 
 part 'nira_gemini_service.g.dart';
 
-// Constante para a chave da API (o ideal é carregar de variáveis de ambiente usando String.fromEnvironment ou flutter_dotenv)
-const _geminiApiKey = String.fromEnvironment('GEMINI_API_KEY', defaultValue: '');
+String _resolveGeminiApiKey() {
+  var key = const String.fromEnvironment('GEMINI_API_KEY', defaultValue: '');
+  if (key.isEmpty) {
+    key = dotenv.env['VITE_GEMINI_API_KEY'] ?? dotenv.env['GEMINI_API_KEY'] ?? '';
+  }
+  return key;
+}
 
 @riverpod
 NiraGeminiService niraGemini(Ref ref) {
-  return NiraGeminiService(_geminiApiKey);
+  return NiraGeminiService(_resolveGeminiApiKey());
 }
 
 class NiraGeminiService {

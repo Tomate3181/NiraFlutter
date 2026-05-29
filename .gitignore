@@ -45,3 +45,4 @@ app.*.map.json
 /android/app/release
 
 Plano_Migracao_NIRA.txt
+.env

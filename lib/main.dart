@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'screens/home_screen.dart';
 import 'screens/conteudos_screen.dart';
@@ -8,7 +10,37 @@ import 'screens/chat_screen.dart';
 import 'screens/como_funciona_screen.dart';
 import 'screens/sobre_screen.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Primeiro, tentamos obter valores passados em tempo de compilação via
+  // --dart-define. Se não existirem, carregamos o arquivo .env (se presente)
+  // usando `flutter_dotenv`.
+  String supabaseUrl = const String.fromEnvironment('SUPABASE_URL', defaultValue: '');
+  String supabaseAnonKey = const String.fromEnvironment('SUPABASE_ANON_KEY', defaultValue: '');
+  String geminiApiKey = const String.fromEnvironment('GEMINI_API_KEY', defaultValue: '');
+
+  if (supabaseUrl.isEmpty || supabaseAnonKey.isEmpty || geminiApiKey.isEmpty) {
+    try {
+      await dotenv.load(fileName: '.env');
+    } catch (_) {
+      // Ignore if .env is missing — we'll handle empties below.
+    }
+
+    supabaseUrl = supabaseUrl.isNotEmpty ? supabaseUrl : (dotenv.env['VITE_SUPABASE_URL'] ?? dotenv.env['SUPABASE_URL'] ?? '');
+    supabaseAnonKey = supabaseAnonKey.isNotEmpty ? supabaseAnonKey : (dotenv.env['VITE_SUPABASE_ANON_KEY'] ?? dotenv.env['SUPABASE_ANON_KEY'] ?? '');
+    geminiApiKey = geminiApiKey.isNotEmpty ? geminiApiKey : (dotenv.env['VITE_GEMINI_API_KEY'] ?? dotenv.env['GEMINI_API_KEY'] ?? '');
+  }
+
+  if (supabaseUrl.isNotEmpty && supabaseAnonKey.isNotEmpty) {
+    await Supabase.initialize(
+      url: supabaseUrl,
+      anonKey: supabaseAnonKey,
+    );
+  } else {
+    debugPrint('SUPABASE_URL or SUPABASE_ANON_KEY not provided; Supabase not initialized.');
+  }
+
   runApp(const ProviderScope(child: MyApp()));
 }
 

@@ -1,4 +1,5 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../models/nira_models.dart';
 
@@ -6,7 +7,29 @@ part 'nira_supabase_service.g.dart';
 
 @riverpod
 NiraSupabaseService niraSupabase(Ref ref) {
-  return NiraSupabaseService(Supabase.instance.client);
+  try {
+    final client = Supabase.instance.client;
+    return NiraSupabaseService(client);
+  } catch (_) {
+    // Tenta valores em tempo de compilação primeiro, depois cai no .env (se
+    // foi carregado no `main`).
+    String url = const String.fromEnvironment('SUPABASE_URL', defaultValue: '');
+    String anonKey = const String.fromEnvironment('SUPABASE_ANON_KEY', defaultValue: '');
+
+    if (url.isEmpty || anonKey.isEmpty) {
+      final envUrl = dotenv.env['VITE_SUPABASE_URL'] ?? dotenv.env['SUPABASE_URL'];
+      final envKey = dotenv.env['VITE_SUPABASE_ANON_KEY'] ?? dotenv.env['SUPABASE_ANON_KEY'];
+      url = url.isNotEmpty ? url : (envUrl ?? '');
+      anonKey = anonKey.isNotEmpty ? anonKey : (envKey ?? '');
+    }
+
+    if (url.isNotEmpty && anonKey.isNotEmpty) {
+      final client = SupabaseClient(url, anonKey);
+      return NiraSupabaseService(client);
+    }
+
+    throw Exception('Supabase não inicializado. Forneça SUPABASE_URL e SUPABASE_ANON_KEY via --dart-define, .env, ou inicialize Supabase antes de usar o serviço.');
+  }
 }
 
 class NiraSupabaseService {
