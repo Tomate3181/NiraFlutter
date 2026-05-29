@@ -76,23 +76,42 @@ class NiraSupabaseService {
 
   /// 3. Disparar SOS
   Future<String?> dispararSOS(
-    double latitude,
-    double longitude,
-    String usuarioId,
-  ) async {
+    double? latitude,
+    double? longitude, {
+    String? usuarioId,
+  }) async {
     try {
       final ticketCode = 'SOS-${DateTime.now().millisecondsSinceEpoch}';
+      // Determine whether to set user_id (UUID) or anonymous_user_ref.
+      String anonRef = 'anon-${DateTime.now().millisecondsSinceEpoch}';
+
+      // If usuarioId not provided, try to use authenticated user id
+      final currentUser = _client.auth.currentUser;
+      String? userIdToUse = usuarioId ?? (currentUser?.id);
+
+      final insertMap = <String, dynamic>{
+        'ticket_code': ticketCode,
+        'status': 'ATIVO',
+        'type': 'MAP',
+        'risk': 'ALTO',
+      };
+
+      if (latitude != null) insertMap['latitude'] = latitude;
+      if (longitude != null) insertMap['longitude'] = longitude;
+
+      // If we have a valid-looking UUID, set user_id; otherwise set anonymous_user_ref
+      final strictUuidPattern = RegExp(
+        r'^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$',
+      );
+      if (userIdToUse != null && strictUuidPattern.hasMatch(userIdToUse)) {
+        insertMap['user_id'] = userIdToUse;
+      } else {
+        insertMap['anonymous_user_ref'] = anonRef;
+      }
+
       final response = await _client
           .from('alerts')
-          .insert({
-            'ticket_code': ticketCode,
-            'user_id': usuarioId,
-            'latitude': latitude,
-            'longitude': longitude,
-            'status': 'ATIVO',
-            'type': 'MAP',
-            'risk': 'ALTO',
-          })
+          .insert(insertMap)
           .select('id')
           .maybeSingle();
 

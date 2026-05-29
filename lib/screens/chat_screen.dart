@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../widgets/nira_glass_card.dart';
 import '../services/nira_supabase_service.dart';
 import '../models/nira_models.dart';
+import 'package:geolocator/geolocator.dart';
 
 // Definindo o Stream do chat real-time dinamicamente com base no chatId
 final chatMessagesStreamProvider = StreamProvider.autoDispose
@@ -319,14 +320,36 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   }
 
   Future<void> _ativarSOS() async {
-    // Integração com Supabase dispararSOS (coordenadas fictícias para exemplo de geolocalização)
+    // Solicita permissão de localização e envia SOS com coordenadas
     try {
       final service = ref.read(niraSupabaseProvider);
-      final createdId = await service.dispararSOS(
-        -23.550520,
-        -46.633308,
-        'anonimo',
-      ); // Ex: Centro de SP
+
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+      }
+
+      double? lat;
+      double? lon;
+
+      if (permission == LocationPermission.always ||
+          permission == LocationPermission.whileInUse) {
+        try {
+          final pos = await Geolocator.getCurrentPosition(
+            desiredAccuracy: LocationAccuracy.high,
+          );
+          lat = pos.latitude;
+          lon = pos.longitude;
+        } catch (e) {
+          debugPrint('Falha ao obter localização: $e');
+        }
+      } else {
+        debugPrint(
+          'Permissão de localização negada; enviando SOS sem coordenadas',
+        );
+      }
+
+      final createdId = await service.dispararSOS(lat, lon);
 
       if (createdId != null && createdId.isNotEmpty) {
         setState(() {
