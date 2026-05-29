@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 // import 'package:riverpod/riverpod.dart';
 import 'package:lucide_icons/lucide_icons.dart';
+import 'package:flutter_html/flutter_html.dart';
 import '../widgets/nira_glass_card.dart';
 import '../services/nira_supabase_service.dart';
 import '../models/nira_models.dart';
@@ -44,31 +45,54 @@ class ConteudosScreen extends ConsumerWidget {
                 artigosAsync.when(
                   data: (artigos) {
                     final filtrados = artigos.where((a) {
-                      final matchCat = categoriaAtual == 'Todos' || a.category == categoriaAtual;
-                      final matchBusca = busca.isEmpty ||
+                      final matchCat =
+                          categoriaAtual == 'Todos' ||
+                          a.category == categoriaAtual;
+                      final matchBusca =
+                          busca.isEmpty ||
                           a.title.toLowerCase().contains(busca.toLowerCase()) ||
-                          (a.description?.toLowerCase().contains(busca.toLowerCase()) ?? false);
+                          (a.description?.toLowerCase().contains(
+                                busca.toLowerCase(),
+                              ) ??
+                              false);
                       return matchCat && matchBusca;
                     }).toList();
 
-                    final destaque = artigos.where((a) => a.featured).firstOrNull ?? artigos.firstOrNull;
+                    final destaque =
+                        artigos.where((a) => a.featured).firstOrNull ??
+                        artigos.firstOrNull;
 
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        if (destaque != null && busca.isEmpty && categoriaAtual == 'Todos')
+                        if (destaque != null &&
+                            busca.isEmpty &&
+                            categoriaAtual == 'Todos')
                           _buildDestaque(context, ref, isMobile, destaque),
-                        _buildListagem(context, ref, isMobile, filtrados, busca),
+                        _buildListagem(
+                          context,
+                          ref,
+                          isMobile,
+                          filtrados,
+                          busca,
+                        ),
                       ],
                     );
                   },
                   loading: () => const Padding(
                     padding: EdgeInsets.all(100.0),
-                    child: Center(child: CircularProgressIndicator(color: Colors.blueAccent)),
+                    child: Center(
+                      child: CircularProgressIndicator(
+                        color: Colors.blueAccent,
+                      ),
+                    ),
                   ),
                   error: (err, stack) => Padding(
                     padding: const EdgeInsets.all(64.0),
-                    child: Text('Erro ao carregar artigos: $err', style: const TextStyle(color: Colors.redAccent)),
+                    child: Text(
+                      'Erro ao carregar artigos: $err',
+                      style: const TextStyle(color: Colors.redAccent),
+                    ),
                   ),
                 ),
               ],
@@ -81,16 +105,35 @@ class ConteudosScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildHero(BuildContext context, WidgetRef ref, bool isMobile, String categoriaAtual, String busca) {
-    const cats = ['Todos', 'Direitos', 'Saúde Mental', 'Segurança', 'Apoio', 'Família'];
+  Widget _buildHero(
+    BuildContext context,
+    WidgetRef ref,
+    bool isMobile,
+    String categoriaAtual,
+    String busca,
+  ) {
+    const cats = [
+      'Todos',
+      'Direitos',
+      'Saúde Mental',
+      'Segurança',
+      'Apoio',
+      'Família',
+    ];
 
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: isMobile ? 24 : 64, vertical: isMobile ? 64 : 120),
+      padding: EdgeInsets.symmetric(
+        horizontal: isMobile ? 24 : 64,
+        vertical: isMobile ? 64 : 120,
+      ),
       decoration: BoxDecoration(
         gradient: RadialGradient(
           center: const Alignment(0, -1.2),
           radius: 1.5,
-          colors: [Colors.purpleAccent.withValues(alpha: 0.15), Colors.transparent],
+          colors: [
+            Colors.purpleAccent.withValues(alpha: 0.15),
+            Colors.transparent,
+          ],
         ),
       ),
       child: Column(
@@ -98,7 +141,9 @@ class ConteudosScreen extends ConsumerWidget {
         children: [
           Flex(
             direction: isMobile ? Axis.vertical : Axis.horizontal,
-            crossAxisAlignment: isMobile ? CrossAxisAlignment.start : CrossAxisAlignment.end,
+            crossAxisAlignment: isMobile
+                ? CrossAxisAlignment.start
+                : CrossAxisAlignment.end,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Expanded(
@@ -107,25 +152,47 @@ class ConteudosScreen extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 6,
+                      ),
                       decoration: BoxDecoration(
                         color: Colors.blueAccent.withValues(alpha: 0.1),
-                        border: Border.all(color: Colors.blueAccent.withValues(alpha: 0.2)),
+                        border: Border.all(
+                          color: Colors.blueAccent.withValues(alpha: 0.2),
+                        ),
                         borderRadius: BorderRadius.circular(100),
                       ),
                       child: const Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(LucideIcons.shield, size: 12, color: Colors.blueAccent),
+                          Icon(
+                            LucideIcons.shield,
+                            size: 12,
+                            color: Colors.blueAccent,
+                          ),
                           SizedBox(width: 8),
-                          Text('CONEXÃO SEGURA ATIVA', style: TextStyle(color: Colors.blueAccent, fontSize: 10, fontWeight: FontWeight.w900, letterSpacing: 2)),
+                          Text(
+                            'CONEXÃO SEGURA ATIVA',
+                            style: TextStyle(
+                              color: Colors.blueAccent,
+                              fontSize: 10,
+                              fontWeight: FontWeight.w900,
+                              letterSpacing: 2,
+                            ),
+                          ),
                         ],
                       ),
                     ),
                     const SizedBox(height: 24),
                     Text(
                       'Informação que\nSalva Vidas.',
-                      style: TextStyle(fontSize: isMobile ? 40 : 64, fontWeight: FontWeight.w900, color: Colors.white, height: 1.1),
+                      style: TextStyle(
+                        fontSize: isMobile ? 40 : 64,
+                        fontWeight: FontWeight.w900,
+                        color: Colors.white,
+                        height: 1.1,
+                      ),
                     ),
                     const SizedBox(height: 16),
                     const Text(
@@ -139,18 +206,37 @@ class ConteudosScreen extends ConsumerWidget {
               SizedBox(
                 width: isMobile ? double.infinity : 400,
                 child: TextField(
-                  onChanged: (val) => ref.read(buscaArtigoProvider.notifier).state = val,
+                  onChanged: (val) =>
+                      ref.read(buscaArtigoProvider.notifier).state = val,
                   style: const TextStyle(color: Colors.white),
                   decoration: InputDecoration(
                     hintText: 'Pesquisar por tema ou palavra-chave...',
                     hintStyle: const TextStyle(color: Colors.white38),
-                    prefixIcon: const Icon(LucideIcons.search, color: Colors.white38),
+                    prefixIcon: const Icon(
+                      LucideIcons.search,
+                      color: Colors.white38,
+                    ),
                     filled: true,
                     fillColor: Colors.white.withValues(alpha: 0.05),
                     contentPadding: const EdgeInsets.symmetric(vertical: 20),
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.1))),
-                    enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.1))),
-                    focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: BorderSide(color: Colors.blueAccent.withValues(alpha: 0.5))),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(16),
+                      borderSide: BorderSide(
+                        color: Colors.white.withValues(alpha: 0.1),
+                      ),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(16),
+                      borderSide: BorderSide(
+                        color: Colors.white.withValues(alpha: 0.1),
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(16),
+                      borderSide: BorderSide(
+                        color: Colors.blueAccent.withValues(alpha: 0.5),
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -163,14 +249,27 @@ class ConteudosScreen extends ConsumerWidget {
             children: cats.map((c) {
               final ativo = categoriaAtual == c;
               return InkWell(
-                onTap: () => ref.read(categoriaAtualProvider.notifier).state = c,
+                onTap: () =>
+                    ref.read(categoriaAtualProvider.notifier).state = c,
                 borderRadius: BorderRadius.circular(100),
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 12,
+                  ),
                   decoration: BoxDecoration(
-                    color: ativo ? Colors.blueAccent : Colors.white.withValues(alpha: 0.05),
+                    color: ativo
+                        ? Colors.blueAccent
+                        : Colors.white.withValues(alpha: 0.05),
                     borderRadius: BorderRadius.circular(100),
-                    boxShadow: ativo ? [BoxShadow(color: Colors.blueAccent.withValues(alpha: 0.3), blurRadius: 12)] : null,
+                    boxShadow: ativo
+                        ? [
+                            BoxShadow(
+                              color: Colors.blueAccent.withValues(alpha: 0.3),
+                              blurRadius: 12,
+                            ),
+                          ]
+                        : null,
                   ),
                   child: Text(
                     c.toUpperCase(),
@@ -184,15 +283,23 @@ class ConteudosScreen extends ConsumerWidget {
                 ),
               );
             }).toList(),
-          )
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildDestaque(BuildContext context, WidgetRef ref, bool isMobile, Article destaque) {
+  Widget _buildDestaque(
+    BuildContext context,
+    WidgetRef ref,
+    bool isMobile,
+    Article destaque,
+  ) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: isMobile ? 24 : 64, vertical: 32),
+      padding: EdgeInsets.symmetric(
+        horizontal: isMobile ? 24 : 64,
+        vertical: 32,
+      ),
       child: InkWell(
         onTap: () => ref.read(artigoAtivoProvider.notifier).state = destaque,
         borderRadius: BorderRadius.circular(48),
@@ -202,9 +309,15 @@ class ConteudosScreen extends ConsumerWidget {
             borderRadius: BorderRadius.circular(48),
             border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
             image: DecorationImage(
-              image: NetworkImage(destaque.imageUrl ?? 'https://images.unsplash.com/photo-1576091160550-217359971f8b?auto=format&fit=crop&q=80&w=800'),
+              image: NetworkImage(
+                destaque.imageUrl ??
+                    'https://images.unsplash.com/photo-1576091160550-217359971f8b?auto=format&fit=crop&q=80&w=800',
+              ),
               fit: BoxFit.cover,
-              colorFilter: ColorFilter.mode(Colors.black.withValues(alpha: 0.5), BlendMode.darken),
+              colorFilter: ColorFilter.mode(
+                Colors.black.withValues(alpha: 0.5),
+                BlendMode.darken,
+              ),
             ),
           ),
           child: Container(
@@ -214,7 +327,10 @@ class ConteudosScreen extends ConsumerWidget {
               gradient: LinearGradient(
                 begin: Alignment.bottomCenter,
                 end: Alignment.topCenter,
-                colors: [const Color(0xFF07070B).withValues(alpha: 0.9), Colors.transparent],
+                colors: [
+                  const Color(0xFF07070B).withValues(alpha: 0.9),
+                  Colors.transparent,
+                ],
               ),
             ),
             child: Column(
@@ -224,26 +340,54 @@ class ConteudosScreen extends ConsumerWidget {
                 Row(
                   children: [
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                      decoration: BoxDecoration(color: Colors.blueAccent, borderRadius: BorderRadius.circular(100)),
-                      child: const Text('📌 MATÉRIA EM DESTAQUE', style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.w900, letterSpacing: 1.5)),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.blueAccent,
+                        borderRadius: BorderRadius.circular(100),
+                      ),
+                      child: const Text(
+                        '📌 MATÉRIA EM DESTAQUE',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 10,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: 1.5,
+                        ),
+                      ),
                     ),
                     const SizedBox(width: 16),
                     Text(
                       '${destaque.category?.toUpperCase() ?? "GERAL"} · ${destaque.readTimeMinutes ?? 5} MIN',
-                      style: const TextStyle(color: Colors.white54, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 1.5),
+                      style: const TextStyle(
+                        color: Colors.white54,
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 1.5,
+                      ),
                     ),
                   ],
                 ),
                 const SizedBox(height: 16),
                 Text(
                   destaque.title,
-                  style: TextStyle(fontSize: isMobile ? 32 : 56, fontWeight: FontWeight.w900, color: Colors.white, height: 1.1),
+                  style: TextStyle(
+                    fontSize: isMobile ? 32 : 56,
+                    fontWeight: FontWeight.w900,
+                    color: Colors.white,
+                    height: 1.1,
+                  ),
                 ),
                 const SizedBox(height: 16),
                 Text(
                   destaque.description ?? '',
-                  style: const TextStyle(color: Colors.white70, fontSize: 18, fontStyle: FontStyle.italic),
+                  style: const TextStyle(
+                    color: Colors.white70,
+                    fontSize: 18,
+                    fontStyle: FontStyle.italic,
+                  ),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -255,9 +399,18 @@ class ConteudosScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildListagem(BuildContext context, WidgetRef ref, bool isMobile, List<Article> artigos, String busca) {
+  Widget _buildListagem(
+    BuildContext context,
+    WidgetRef ref,
+    bool isMobile,
+    List<Article> artigos,
+    String busca,
+  ) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: isMobile ? 24 : 64, vertical: 64),
+      padding: EdgeInsets.symmetric(
+        horizontal: isMobile ? 24 : 64,
+        vertical: 64,
+      ),
       child: Column(
         children: [
           Row(
@@ -265,11 +418,21 @@ class ConteudosScreen extends ConsumerWidget {
             children: [
               Text(
                 'EXPLORE A BIBLIOTECA${busca.isNotEmpty ? ' · Resultados para "$busca"' : ''}',
-                style: const TextStyle(color: Colors.white38, fontSize: 12, fontWeight: FontWeight.w900, letterSpacing: 2),
+                style: const TextStyle(
+                  color: Colors.white38,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: 2,
+                ),
               ),
               Text(
                 '${artigos.length} ARTIGOS',
-                style: const TextStyle(color: Colors.white54, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 1.5),
+                style: const TextStyle(
+                  color: Colors.white54,
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 1.5,
+                ),
               ),
             ],
           ),
@@ -282,7 +445,15 @@ class ConteudosScreen extends ConsumerWidget {
                 children: [
                   Icon(LucideIcons.search, size: 64, color: Colors.blueAccent),
                   SizedBox(height: 16),
-                  Text('NENHUM RESULTADO ENCONTRADO', style: TextStyle(color: Colors.white54, fontSize: 14, fontWeight: FontWeight.w900, letterSpacing: 2)),
+                  Text(
+                    'NENHUM RESULTADO ENCONTRADO',
+                    style: TextStyle(
+                      color: Colors.white54,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: 2,
+                    ),
+                  ),
                 ],
               ),
             )
@@ -290,15 +461,24 @@ class ConteudosScreen extends ConsumerWidget {
             Wrap(
               spacing: 32,
               runSpacing: 32,
-              children: artigos.map((art) => _buildArticleCard(context, ref, isMobile, art)).toList(),
+              children: artigos
+                  .map((art) => _buildArticleCard(context, ref, isMobile, art))
+                  .toList(),
             ),
         ],
       ),
     );
   }
 
-  Widget _buildArticleCard(BuildContext context, WidgetRef ref, bool isMobile, Article art) {
-    final width = isMobile ? double.infinity : (MediaQuery.sizeOf(context).width - 128 - 64) / 3;
+  Widget _buildArticleCard(
+    BuildContext context,
+    WidgetRef ref,
+    bool isMobile,
+    Article art,
+  ) {
+    final width = isMobile
+        ? double.infinity
+        : (MediaQuery.sizeOf(context).width - 128 - 64) / 3;
 
     return SizedBox(
       width: width,
@@ -313,7 +493,10 @@ class ConteudosScreen extends ConsumerWidget {
                 height: 200,
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: NetworkImage(art.imageUrl ?? 'https://images.unsplash.com/photo-1576091160550-217359971f8b?auto=format&fit=crop&q=80&w=800'),
+                    image: NetworkImage(
+                      art.imageUrl ??
+                          'https://images.unsplash.com/photo-1576091160550-217359971f8b?auto=format&fit=crop&q=80&w=800',
+                    ),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -324,7 +507,10 @@ class ConteudosScreen extends ConsumerWidget {
                         gradient: LinearGradient(
                           begin: Alignment.bottomCenter,
                           end: Alignment.topCenter,
-                          colors: [const Color(0xFF151521).withValues(alpha: 0.9), Colors.transparent],
+                          colors: [
+                            const Color(0xFF151521).withValues(alpha: 0.9),
+                            Colors.transparent,
+                          ],
                         ),
                       ),
                     ),
@@ -332,18 +518,28 @@ class ConteudosScreen extends ConsumerWidget {
                       top: 24,
                       left: 24,
                       child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 6,
+                        ),
                         decoration: BoxDecoration(
                           color: const Color(0xFF07070B).withValues(alpha: 0.8),
                           borderRadius: BorderRadius.circular(100),
-                          border: Border.all(color: Colors.blueAccent.withValues(alpha: 0.2)),
+                          border: Border.all(
+                            color: Colors.blueAccent.withValues(alpha: 0.2),
+                          ),
                         ),
                         child: Text(
                           art.category?.toUpperCase() ?? 'GERAL',
-                          style: const TextStyle(color: Colors.blueAccent, fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.5),
+                          style: const TextStyle(
+                            color: Colors.blueAccent,
+                            fontSize: 9,
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: 1.5,
+                          ),
                         ),
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),
@@ -354,12 +550,21 @@ class ConteudosScreen extends ConsumerWidget {
                   children: [
                     Text(
                       art.title,
-                      style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w900, height: 1.2),
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w900,
+                        height: 1.2,
+                      ),
                     ),
                     const SizedBox(height: 16),
                     Text(
                       art.description ?? '',
-                      style: const TextStyle(color: Colors.white54, fontSize: 14, height: 1.6),
+                      style: const TextStyle(
+                        color: Colors.white54,
+                        fontSize: 14,
+                        height: 1.6,
+                      ),
                       maxLines: 3,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -374,25 +579,57 @@ class ConteudosScreen extends ConsumerWidget {
                             Container(
                               width: 32,
                               height: 32,
-                              decoration: BoxDecoration(color: Colors.blueAccent.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(8)),
-                              child: const Center(child: Text('N', style: TextStyle(color: Colors.blueAccent, fontWeight: FontWeight.w900, fontSize: 10))),
+                              decoration: BoxDecoration(
+                                color: Colors.blueAccent.withValues(alpha: 0.1),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: const Center(
+                                child: Text(
+                                  'N',
+                                  style: TextStyle(
+                                    color: Colors.blueAccent,
+                                    fontWeight: FontWeight.w900,
+                                    fontSize: 10,
+                                  ),
+                                ),
+                              ),
                             ),
                             const SizedBox(width: 12),
-                            const Text('REDE NIRA', style: TextStyle(color: Colors.white54, fontSize: 10, fontWeight: FontWeight.w900, letterSpacing: 1.5)),
+                            const Text(
+                              'REDE NIRA',
+                              style: TextStyle(
+                                color: Colors.white54,
+                                fontSize: 10,
+                                fontWeight: FontWeight.w900,
+                                letterSpacing: 1.5,
+                              ),
+                            ),
                           ],
                         ),
                         Row(
                           children: [
-                            const Icon(LucideIcons.clock, size: 12, color: Colors.white38),
+                            const Icon(
+                              LucideIcons.clock,
+                              size: 12,
+                              color: Colors.white38,
+                            ),
                             const SizedBox(width: 8),
-                            Text('${art.readTimeMinutes ?? 5} MIN', style: const TextStyle(color: Colors.white38, fontSize: 10, fontWeight: FontWeight.w900, letterSpacing: 1.5)),
+                            Text(
+                              '${art.readTimeMinutes ?? 5} MIN',
+                              style: const TextStyle(
+                                color: Colors.white38,
+                                fontSize: 10,
+                                fontWeight: FontWeight.w900,
+                                letterSpacing: 1.5,
+                              ),
+                            ),
                           ],
-                        )
+                        ),
                       ],
-                    )
+                    ),
                   ],
                 ),
-              )
+              ),
             ],
           ),
         ),
@@ -400,25 +637,39 @@ class ConteudosScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildModalArtigo(BuildContext context, WidgetRef ref, bool isMobile, Article artigo) {
+  Widget _buildModalArtigo(
+    BuildContext context,
+    WidgetRef ref,
+    bool isMobile,
+    Article artigo,
+  ) {
     return Material(
       color: Colors.transparent,
       child: Stack(
         children: [
           GestureDetector(
             onTap: () => ref.read(artigoAtivoProvider.notifier).state = null,
-            child: Container(color: const Color(0xFF07070B).withValues(alpha: 0.9)),
+            child: Container(
+              color: const Color(0xFF07070B).withValues(alpha: 0.9),
+            ),
           ),
           Center(
             child: Container(
               width: isMobile ? double.infinity : 900,
-              height: isMobile ? double.infinity : MediaQuery.sizeOf(context).height * 0.9,
+              height: isMobile
+                  ? double.infinity
+                  : MediaQuery.sizeOf(context).height * 0.9,
               margin: isMobile ? EdgeInsets.zero : const EdgeInsets.all(32),
               decoration: BoxDecoration(
                 color: const Color(0xFF11111B),
                 borderRadius: BorderRadius.circular(isMobile ? 0 : 48),
                 border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
-                boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.5), blurRadius: 40)],
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.5),
+                    blurRadius: 40,
+                  ),
+                ],
               ),
               child: Stack(
                 children: [
@@ -430,7 +681,10 @@ class ConteudosScreen extends ConsumerWidget {
                           height: 400,
                           decoration: BoxDecoration(
                             image: DecorationImage(
-                              image: NetworkImage(artigo.imageUrl ?? 'https://images.unsplash.com/photo-1576091160550-217359971f8b?auto=format&fit=crop&q=80&w=800'),
+                              image: NetworkImage(
+                                artigo.imageUrl ??
+                                    'https://images.unsplash.com/photo-1576091160550-217359971f8b?auto=format&fit=crop&q=80&w=800',
+                              ),
                               fit: BoxFit.cover,
                             ),
                           ),
@@ -440,7 +694,10 @@ class ConteudosScreen extends ConsumerWidget {
                               gradient: LinearGradient(
                                 begin: Alignment.bottomCenter,
                                 end: Alignment.topCenter,
-                                colors: [const Color(0xFF11111B), Colors.transparent],
+                                colors: [
+                                  const Color(0xFF11111B),
+                                  Colors.transparent,
+                                ],
                               ),
                             ),
                             child: Column(
@@ -448,17 +705,33 @@ class ConteudosScreen extends ConsumerWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-                                  decoration: BoxDecoration(color: Colors.blueAccent, borderRadius: BorderRadius.circular(100)),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                    vertical: 6,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: Colors.blueAccent,
+                                    borderRadius: BorderRadius.circular(100),
+                                  ),
                                   child: Text(
                                     artigo.category?.toUpperCase() ?? 'GERAL',
-                                    style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.w900, letterSpacing: 1.5),
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w900,
+                                      letterSpacing: 1.5,
+                                    ),
                                   ),
                                 ),
                                 const SizedBox(height: 24),
                                 Text(
                                   artigo.title,
-                                  style: TextStyle(fontSize: isMobile ? 32 : 48, fontWeight: FontWeight.w900, color: Colors.white, height: 1.1),
+                                  style: TextStyle(
+                                    fontSize: isMobile ? 32 : 48,
+                                    fontWeight: FontWeight.w900,
+                                    color: Colors.white,
+                                    height: 1.1,
+                                  ),
                                 ),
                               ],
                             ),
@@ -476,18 +749,45 @@ class ConteudosScreen extends ConsumerWidget {
                                   const Row(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      Icon(LucideIcons.heart, size: 14, color: Colors.blueAccent),
+                                      Icon(
+                                        LucideIcons.heart,
+                                        size: 14,
+                                        color: Colors.blueAccent,
+                                      ),
                                       SizedBox(width: 8),
-                                      Text('ESCRITO POR REDE NIRA', style: TextStyle(color: Colors.white54, fontSize: 11, fontWeight: FontWeight.bold, letterSpacing: 1.5)),
+                                      Text(
+                                        'ESCRITO POR REDE NIRA',
+                                        style: TextStyle(
+                                          color: Colors.white54,
+                                          fontSize: 11,
+                                          fontWeight: FontWeight.bold,
+                                          letterSpacing: 1.5,
+                                        ),
+                                      ),
                                     ],
                                   ),
-                                  const Text('|', style: TextStyle(color: Colors.white24)),
+                                  const Text(
+                                    '|',
+                                    style: TextStyle(color: Colors.white24),
+                                  ),
                                   Row(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      const Icon(LucideIcons.clock, size: 14, color: Colors.white54),
+                                      const Icon(
+                                        LucideIcons.clock,
+                                        size: 14,
+                                        color: Colors.white54,
+                                      ),
                                       const SizedBox(width: 8),
-                                      Text('LEITURA DE ${artigo.readTimeMinutes ?? 5} MIN', style: const TextStyle(color: Colors.white54, fontSize: 11, fontWeight: FontWeight.bold, letterSpacing: 1.5)),
+                                      Text(
+                                        'LEITURA DE ${artigo.readTimeMinutes ?? 5} MIN',
+                                        style: const TextStyle(
+                                          color: Colors.white54,
+                                          fontSize: 11,
+                                          fontWeight: FontWeight.bold,
+                                          letterSpacing: 1.5,
+                                        ),
+                                      ),
                                     ],
                                   ),
                                 ],
@@ -496,27 +796,69 @@ class ConteudosScreen extends ConsumerWidget {
                               const Divider(color: Colors.white10),
                               const SizedBox(height: 32),
                               Container(
-                                padding: const EdgeInsets.only(left: 24, top: 8, bottom: 8),
-                                decoration: const BoxDecoration(
-                                  border: Border(left: BorderSide(color: Colors.blueAccent, width: 4)),
+                                padding: const EdgeInsets.only(
+                                  left: 24,
+                                  top: 8,
+                                  bottom: 8,
                                 ),
-                                child: Text(
-                                  artigo.description ?? '',
-                                  style: const TextStyle(color: Colors.white, fontSize: 20, fontStyle: FontStyle.italic, fontWeight: FontWeight.w500, height: 1.6),
+                                decoration: const BoxDecoration(
+                                  border: Border(
+                                    left: BorderSide(
+                                      color: Colors.blueAccent,
+                                      width: 4,
+                                    ),
+                                  ),
+                                ),
+                                child: Html(
+                                  data: artigo.description ?? '',
+                                  style: {
+                                    'body': Style(
+                                      margin: Margins.zero,
+                                      padding: HtmlPaddings.zero,
+                                      color: Colors.white,
+                                      fontSize: FontSize(20),
+                                      fontStyle: FontStyle.italic,
+                                      fontWeight: FontWeight.w500,
+                                      lineHeight: const LineHeight(1.6),
+                                    ),
+                                  },
                                 ),
                               ),
                               const SizedBox(height: 32),
-                              // TODO: No futuro, substituir por flutter_html se o conteúdo for rich text do banco.
-                              Text(
-                                artigo.content ?? 'Conteúdo não disponível para leitura no momento.',
-                                style: const TextStyle(color: Colors.white70, fontSize: 18, height: 1.8),
+                              Html(
+                                data:
+                                    artigo.content ??
+                                    '<p>Conteúdo não disponível para leitura no momento.</p>',
+                                style: {
+                                  'body': Style(
+                                    color: Colors.white70,
+                                    fontSize: FontSize(18),
+                                    lineHeight: const LineHeight(1.8),
+                                  ),
+                                  'p': Style(
+                                    margin: Margins.symmetric(vertical: 8),
+                                  ),
+                                  'ul': Style(
+                                    margin: Margins.symmetric(vertical: 8),
+                                    padding: HtmlPaddings.only(left: 20),
+                                  ),
+                                  'li': Style(
+                                    margin: Margins.symmetric(vertical: 4),
+                                  ),
+                                },
                               ),
                               const SizedBox(height: 48),
                               Container(
                                 padding: const EdgeInsets.all(40),
                                 decoration: BoxDecoration(
-                                  color: Colors.blueAccent.withValues(alpha: 0.05),
-                                  border: Border.all(color: Colors.blueAccent.withValues(alpha: 0.2)),
+                                  color: Colors.blueAccent.withValues(
+                                    alpha: 0.05,
+                                  ),
+                                  border: Border.all(
+                                    color: Colors.blueAccent.withValues(
+                                      alpha: 0.2,
+                                    ),
+                                  ),
                                   borderRadius: BorderRadius.circular(32),
                                 ),
                                 child: Column(
@@ -524,20 +866,42 @@ class ConteudosScreen extends ConsumerWidget {
                                   children: [
                                     const Row(
                                       children: [
-                                        Icon(LucideIcons.shield, size: 16, color: Colors.blueAccent),
+                                        Icon(
+                                          LucideIcons.shield,
+                                          size: 16,
+                                          color: Colors.blueAccent,
+                                        ),
                                         SizedBox(width: 12),
-                                        Text('AVISO DE SEGURANÇA:', style: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w900, letterSpacing: 1.5)),
+                                        Text(
+                                          'AVISO DE SEGURANÇA:',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w900,
+                                            letterSpacing: 1.5,
+                                          ),
+                                        ),
                                       ],
                                     ),
                                     const SizedBox(height: 24),
                                     const Text(
                                       'Este é um conteúdo informativo fornecido para auxiliar mulheres em situação de risco. O NIRA não substitui o aconselhamento jurídico formal, mas oferece as primeiras diretrizes de segurança e suporte emocional.',
-                                      style: TextStyle(color: Colors.white70, fontSize: 14, height: 1.6),
+                                      style: TextStyle(
+                                        color: Colors.white70,
+                                        fontSize: 14,
+                                        height: 1.6,
+                                      ),
                                     ),
                                     const SizedBox(height: 24),
-                                    _buildSafetyRule('1', 'Busque um local seguro e silencioso antes de continuar a leitura ou solicitar ajuda.'),
+                                    _buildSafetyRule(
+                                      '1',
+                                      'Busque um local seguro e silencioso antes de continuar a leitura ou solicitar ajuda.',
+                                    ),
                                     const SizedBox(height: 16),
-                                    _buildSafetyRule('2', 'Lembre-se de usar o modo de navegação anônima para sua segurança digital.'),
+                                    _buildSafetyRule(
+                                      '2',
+                                      'Lembre-se de usar o modo de navegação anônima para sua segurança digital.',
+                                    ),
                                   ],
                                 ),
                               ),
@@ -545,41 +909,74 @@ class ConteudosScreen extends ConsumerWidget {
                               const Divider(color: Colors.white10),
                               const SizedBox(height: 48),
                               Flex(
-                                direction: isMobile ? Axis.vertical : Axis.horizontal,
+                                direction: isMobile
+                                    ? Axis.vertical
+                                    : Axis.horizontal,
                                 children: [
                                   Expanded(
                                     flex: isMobile ? 0 : 1,
                                     child: ElevatedButton.icon(
-                                      onPressed: () { ref.read(artigoAtivoProvider.notifier).state = null; },
+                                      onPressed: () {
+                                        ref
+                                                .read(
+                                                  artigoAtivoProvider.notifier,
+                                                )
+                                                .state =
+                                            null;
+                                      },
                                       icon: const Icon(LucideIcons.arrowRight),
-                                      label: const Text('SOLICITAR APOIO AGORA'),
+                                      label: const Text(
+                                        'SOLICITAR APOIO AGORA',
+                                      ),
                                       style: ElevatedButton.styleFrom(
                                         backgroundColor: Colors.blueAccent,
                                         foregroundColor: Colors.white,
-                                        padding: const EdgeInsets.symmetric(vertical: 24),
-                                        textStyle: const TextStyle(fontWeight: FontWeight.w900, letterSpacing: 1.5),
+                                        padding: const EdgeInsets.symmetric(
+                                          vertical: 24,
+                                        ),
+                                        textStyle: const TextStyle(
+                                          fontWeight: FontWeight.w900,
+                                          letterSpacing: 1.5,
+                                        ),
                                       ),
                                     ),
                                   ),
-                                  SizedBox(width: isMobile ? 0 : 16, height: isMobile ? 16 : 0),
+                                  SizedBox(
+                                    width: isMobile ? 0 : 16,
+                                    height: isMobile ? 16 : 0,
+                                  ),
                                   Expanded(
                                     flex: isMobile ? 0 : 1,
                                     child: OutlinedButton(
-                                      onPressed: () => ref.read(artigoAtivoProvider.notifier).state = null,
+                                      onPressed: () =>
+                                          ref
+                                                  .read(
+                                                    artigoAtivoProvider
+                                                        .notifier,
+                                                  )
+                                                  .state =
+                                              null,
                                       style: OutlinedButton.styleFrom(
                                         foregroundColor: Colors.white,
-                                        side: const BorderSide(color: Colors.white24),
-                                        padding: const EdgeInsets.symmetric(vertical: 24),
-                                        textStyle: const TextStyle(fontWeight: FontWeight.w900, letterSpacing: 1.5),
+                                        side: const BorderSide(
+                                          color: Colors.white24,
+                                        ),
+                                        padding: const EdgeInsets.symmetric(
+                                          vertical: 24,
+                                        ),
+                                        textStyle: const TextStyle(
+                                          fontWeight: FontWeight.w900,
+                                          letterSpacing: 1.5,
+                                        ),
                                       ),
                                       child: const Text('VOLTAR PARA GALERIA'),
                                     ),
                                   ),
                                 ],
-                              )
+                              ),
                             ],
                           ),
-                        )
+                        ),
                       ],
                     ),
                   ),
@@ -588,14 +985,18 @@ class ConteudosScreen extends ConsumerWidget {
                     right: 24,
                     child: IconButton(
                       icon: const Icon(LucideIcons.x, color: Colors.white),
-                      onPressed: () => ref.read(artigoAtivoProvider.notifier).state = null,
-                      style: IconButton.styleFrom(backgroundColor: Colors.black45, padding: const EdgeInsets.all(16)),
+                      onPressed: () =>
+                          ref.read(artigoAtivoProvider.notifier).state = null,
+                      style: IconButton.styleFrom(
+                        backgroundColor: Colors.black45,
+                        padding: const EdgeInsets.all(16),
+                      ),
                     ),
-                  )
+                  ),
                 ],
               ),
             ),
-          )
+          ),
         ],
       ),
     );
@@ -608,11 +1009,28 @@ class ConteudosScreen extends ConsumerWidget {
         Container(
           width: 24,
           height: 24,
-          decoration: const BoxDecoration(color: Colors.blueAccent, shape: BoxShape.circle),
-          child: Center(child: Text(num, style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.w900))),
+          decoration: const BoxDecoration(
+            color: Colors.blueAccent,
+            shape: BoxShape.circle,
+          ),
+          child: Center(
+            child: Text(
+              num,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 10,
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+          ),
         ),
         const SizedBox(width: 16),
-        Expanded(child: Text(text, style: const TextStyle(color: Colors.white70, fontSize: 14))),
+        Expanded(
+          child: Text(
+            text,
+            style: const TextStyle(color: Colors.white70, fontSize: 14),
+          ),
+        ),
       ],
     );
   }
