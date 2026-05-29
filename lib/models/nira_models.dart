@@ -37,7 +37,7 @@ enum AlertType {
 // ----------------------------------------------------------------------
 
 @freezed
-class Organization with _$Organization {
+abstract class Organization with _$Organization {
   const factory Organization({
     required String id,
     required String name,
@@ -50,7 +50,7 @@ class Organization with _$Organization {
 }
 
 @freezed
-class Profile with _$Profile {
+abstract class Profile with _$Profile {
   const factory Profile({
     required String id,
     required String name,
@@ -74,7 +74,7 @@ class Profile with _$Profile {
 }
 
 @freezed
-class Article with _$Article {
+abstract class Article with _$Article {
   const factory Article({
     required String id,
     required String title,
@@ -94,7 +94,7 @@ class Article with _$Article {
 }
 
 @freezed
-class Alert with _$Alert {
+abstract class Alert with _$Alert {
   const factory Alert({
     required String id,
     @JsonKey(name: 'ticket_code') required String ticketCode,
@@ -116,7 +116,7 @@ class Alert with _$Alert {
 }
 
 @freezed
-class AlertLog with _$AlertLog {
+abstract class AlertLog with _$AlertLog {
   const factory AlertLog({
     required String id,
     @JsonKey(name: 'alert_id') String? alertId,
@@ -129,7 +129,7 @@ class AlertLog with _$AlertLog {
 }
 
 @freezed
-class ChatMessage with _$ChatMessage {
+abstract class ChatMessage with _$ChatMessage {
   const factory ChatMessage({
     required String id,
     @JsonKey(name: 'alert_id') String? alertId,
