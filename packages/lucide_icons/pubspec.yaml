@@ -1,0 +1,8 @@
+name: lucide_icons
+version: 0.0.1
+description: Local shim for lucide_icons used by NIRA project (maps to Material icons)
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+flutter:
+  uses-material-design: true
