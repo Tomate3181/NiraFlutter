@@ -150,10 +150,10 @@ class HomeScreen extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: 8),
-          const Text(
-            'Visualização administrativa integrada ao fluxo de Streams do Supabase.',
-            style: TextStyle(color: Colors.white54, fontSize: 16),
-          ),
+          // const Text(
+          //   'Visualização administrativa integrada ao fluxo de Streams do Supabase.',
+          //   style: TextStyle(color: Colors.white54, fontSize: 16),
+          // ),
           const SizedBox(height: 32),
           alertasAsync.when(
             data: (alertas) => isMobile
