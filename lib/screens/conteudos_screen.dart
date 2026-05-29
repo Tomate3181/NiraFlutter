@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
+// import 'package:riverpod/riverpod.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../widgets/nira_glass_card.dart';
 import '../services/nira_supabase_service.dart';
