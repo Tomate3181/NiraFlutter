@@ -913,7 +913,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                       border: Border.all(color: const Color(0xFFFF4757).withValues(alpha: 0.2)),
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: const Text('Nossa equipe já está agindo.', style: TextStyle(color: Color(0xFFFF4757), fontSize: 12, fontWeight: FontWeight.bold, uppercase: true, letterSpacing: 1.5)),
+                    child: const Text('Nossa equipe já está agindo.', style: TextStyle(color: Color(0xFFFF4757), fontSize: 12, fontWeight: FontWeight.bold, letterSpacing: 1.5)),
                   ),
                   const SizedBox(height: 32),
                   Container(
