@@ -33,7 +33,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   final TextEditingController _textController = TextEditingController();
 
   // Histórico de mensagens local (Triage Chatbot)
-  List<Map<String, dynamic>> _messages = [];
+  final List<Map<String, dynamic>> _messages = [];
 
   // O fluxo de triagem estático baseado no React
   final List<Map<String, dynamic>> _flow = [
@@ -329,7 +329,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
       width: 290,
       decoration: BoxDecoration(
         color: const Color(0xFF111119),
-        border: Border(right: BorderSide(color: const Color(0xFF9B8FFF).withOpacity(0.08))),
+        border: Border(right: BorderSide(color: const Color(0xFF9B8FFF).withValues(alpha: 0.08))),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -343,9 +343,9 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                   onTap: () => Navigator.of(context).pop(),
                   child: Row(
                     children: [
-                      Icon(LucideIcons.arrowLeft, size: 14, color: Colors.white.withOpacity(0.4)),
+                      Icon(LucideIcons.arrowLeft, size: 14, color: Colors.white.withValues(alpha: 0.4)),
                       const SizedBox(width: 6),
-                      Text('Voltar ao site', style: TextStyle(color: Colors.white.withOpacity(0.4), fontSize: 12, fontWeight: FontWeight.w600)),
+                      Text('Voltar ao site', style: TextStyle(color: Colors.white.withValues(alpha: 0.4), fontSize: 12, fontWeight: FontWeight.w600)),
                     ],
                   ),
                 ),
@@ -358,15 +358,15 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF8B7EFA).withOpacity(0.05),
-                      border: Border.all(color: const Color(0xFF8B7EFA).withOpacity(0.35)),
+                      color: const Color(0xFF8B7EFA).withValues(alpha: 0.05),
+                      border: Border.all(color: const Color(0xFF8B7EFA).withValues(alpha: 0.35)),
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Row(
                       children: [
                         const Icon(LucideIcons.sparkles, size: 14, color: Color(0xFF8A7EF8)),
                         const SizedBox(width: 10),
-                        Text('Nova conversa', style: TextStyle(color: Colors.white.withOpacity(0.6), fontSize: 13, fontWeight: FontWeight.w600)),
+                        Text('Nova conversa', style: TextStyle(color: Colors.white.withValues(alpha: 0.6), fontSize: 13, fontWeight: FontWeight.w600)),
                       ],
                     ),
                   ),
@@ -378,15 +378,15 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           Container(
             padding: const EdgeInsets.all(24),
             decoration: BoxDecoration(
-              border: Border(top: BorderSide(color: const Color(0xFF9B8FFF).withOpacity(0.08))),
+              border: Border(top: BorderSide(color: const Color(0xFF9B8FFF).withValues(alpha: 0.08))),
             ),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(LucideIcons.lock, size: 18, color: Colors.white.withOpacity(0.8)),
+                Icon(LucideIcons.lock, size: 18, color: Colors.white.withValues(alpha: 0.8)),
                 const SizedBox(width: 12),
                 Expanded(
-                  child: Text('Todas as conversas são 100% anônimas. Nenhum dado pessoal é armazenado.', style: TextStyle(color: Colors.white.withOpacity(0.4), fontSize: 11, fontWeight: FontWeight.w500, height: 1.5)),
+                  child: Text('Todas as conversas são 100% anônimas. Nenhum dado pessoal é armazenado.', style: TextStyle(color: Colors.white.withValues(alpha: 0.4), fontSize: 11, fontWeight: FontWeight.w500, height: 1.5)),
                 )
               ],
             ),
@@ -401,8 +401,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 18),
       decoration: BoxDecoration(
         color: const Color(0xFF111119),
-        border: Border(bottom: BorderSide(color: const Color(0xFF9B8FFF).withOpacity(0.05))),
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 10, offset: const Offset(0, 4))],
+        border: Border(bottom: BorderSide(color: const Color(0xFF9B8FFF).withValues(alpha: 0.05))),
+        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.1), blurRadius: 10, offset: const Offset(0, 4))],
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -418,7 +418,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   gradient: const LinearGradient(colors: [Color(0x0DFFFFFF), Color(0x269B8FFF)]),
-                  boxShadow: [BoxShadow(color: const Color(0xFF8B7EFA).withOpacity(0.1), blurRadius: 20)],
+                  boxShadow: [BoxShadow(color: const Color(0xFF8B7EFA).withValues(alpha: 0.1), blurRadius: 20)],
                 ),
                 child: const Center(child: Icon(LucideIcons.shield, color: Color(0xFFA491FF), size: 20)),
               ),
@@ -438,7 +438,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                       ),
                       if (_riscoAtual != null) ...[
                         const SizedBox(width: 8),
-                        Text('· Grau: ${_riscoAtual!.toUpperCase()}', style: TextStyle(color: Colors.white.withOpacity(0.7), fontSize: 12, fontWeight: FontWeight.bold)),
+                        Text('· Grau: ${_riscoAtual!.toUpperCase()}', style: TextStyle(color: Colors.white.withValues(alpha: 0.7), fontSize: 12, fontWeight: FontWeight.bold)),
                       ]
                     ],
                   )
@@ -453,10 +453,10 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                 icon: const Icon(LucideIcons.alertTriangle, size: 14),
                 label: const Text('Acionar S.O.S.'),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFFF4757).withOpacity(0.1),
+                  backgroundColor: const Color(0xFFFF4757).withValues(alpha: 0.1),
                   foregroundColor: const Color(0xFFFF4757),
                   elevation: 0,
-                  side: BorderSide(color: const Color(0xFFFF4757).withOpacity(0.3)),
+                  side: BorderSide(color: const Color(0xFFFF4757).withValues(alpha: 0.3)),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 ),
@@ -468,10 +468,10 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                   icon: const Icon(LucideIcons.messageSquare, size: 14),
                   label: Text(_isHumanSupport ? 'Conexão Iniciada' : 'Atendimento Humano'),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: _isHumanSupport ? const Color(0xFF2ED573).withOpacity(0.15) : Colors.transparent,
-                    foregroundColor: _isHumanSupport ? const Color(0xFF2ED573) : Colors.white.withOpacity(0.8),
+                    backgroundColor: _isHumanSupport ? const Color(0xFF2ED573).withValues(alpha: 0.15) : Colors.transparent,
+                    foregroundColor: _isHumanSupport ? const Color(0xFF2ED573) : Colors.white.withValues(alpha: 0.8),
                     elevation: 0,
-                    side: BorderSide(color: _isHumanSupport ? const Color(0xFF2ED573).withOpacity(0.4) : const Color(0xFF9B8FFF).withOpacity(0.25)),
+                    side: BorderSide(color: _isHumanSupport ? const Color(0xFF2ED573).withValues(alpha: 0.4) : const Color(0xFF9B8FFF).withValues(alpha: 0.25)),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   ),
@@ -497,7 +497,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
             Text(
               'O painel atua por intermédio reativo e confidencial da plataforma Nira.\nEscolha o vetor primário que requer nossa atenção agora:',
               textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.white.withOpacity(0.5), fontSize: 15, height: 1.6),
+              style: TextStyle(color: Colors.white.withValues(alpha: 0.5), fontSize: 15, height: 1.6),
             ),
             const SizedBox(height: 48),
             Wrap(
@@ -525,8 +525,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
         width: 220,
         padding: const EdgeInsets.all(18),
         decoration: BoxDecoration(
-          color: const Color(0xFFA491FF).withOpacity(0.05),
-          border: Border.all(color: const Color(0xFFA491FF).withOpacity(0.2)),
+          color: const Color(0xFFA491FF).withValues(alpha: 0.05),
+          border: Border.all(color: const Color(0xFFA491FF).withValues(alpha: 0.2)),
           borderRadius: BorderRadius.circular(12),
         ),
         child: Column(
@@ -534,13 +534,13 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           children: [
             Container(
               width: 42, height: 42,
-              decoration: BoxDecoration(color: const Color(0xFFA491FF).withOpacity(0.1), borderRadius: BorderRadius.circular(8)),
+              decoration: BoxDecoration(color: const Color(0xFFA491FF).withValues(alpha: 0.1), borderRadius: BorderRadius.circular(8)),
               child: Center(child: Icon(icon, color: const Color(0xFFA491FF), size: 20)),
             ),
             const SizedBox(height: 12),
             Text(title, style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold)),
             const SizedBox(height: 6),
-            Text(desc, style: TextStyle(color: Colors.white.withOpacity(0.4), fontSize: 12)),
+            Text(desc, style: TextStyle(color: Colors.white.withValues(alpha: 0.4), fontSize: 12)),
           ],
         ),
       ),
@@ -585,8 +585,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFA491FF).withOpacity(0.05),
-                        border: Border.all(color: const Color(0xFFA491FF).withOpacity(0.2)),
+                        color: const Color(0xFFA491FF).withValues(alpha: 0.05),
+                        border: Border.all(color: const Color(0xFFA491FF).withValues(alpha: 0.2)),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Text(
@@ -604,7 +604,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                             onPressed: () => _escolherOpcao(opt),
                             style: OutlinedButton.styleFrom(
                               foregroundColor: const Color(0xFFD1D5DB),
-                              side: BorderSide(color: Colors.white.withOpacity(0.15)),
+                              side: BorderSide(color: Colors.white.withValues(alpha: 0.15)),
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                             ),
@@ -614,7 +614,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                       ),
                     Padding(
                       padding: const EdgeInsets.only(top: 8.0),
-                      child: Text(msg['time'], style: TextStyle(color: Colors.white.withOpacity(0.3), fontSize: 10, fontWeight: FontWeight.bold)),
+                      child: Text(msg['time'], style: TextStyle(color: Colors.white.withValues(alpha: 0.3), fontSize: 10, fontWeight: FontWeight.bold)),
                     )
                   ],
                 ),
@@ -623,7 +623,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                 const SizedBox(width: 16),
                 Container(
                   width: 42, height: 42,
-                  decoration: BoxDecoration(color: const Color(0xFFA491FF).withOpacity(0.5), shape: BoxShape.circle),
+                  decoration: BoxDecoration(color: const Color(0xFFA491FF).withValues(alpha: 0.5), shape: BoxShape.circle),
                   child: const Center(child: Icon(LucideIcons.user, color: Colors.white, size: 20)),
                 ),
               ],
@@ -664,8 +664,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFA491FF).withOpacity(0.05),
-                          border: Border.all(color: const Color(0xFFA491FF).withOpacity(0.2)),
+                          color: const Color(0xFFA491FF).withValues(alpha: 0.05),
+                          border: Border.all(color: const Color(0xFFA491FF).withValues(alpha: 0.2)),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Text(msg['text'].toString().replaceAll('**', ''), style: const TextStyle(color: Color(0xFFD1D5DB), fontSize: 15, height: 1.6)),
@@ -677,7 +677,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                   const SizedBox(width: 16),
                   Container(
                     width: 42, height: 42,
-                    decoration: BoxDecoration(color: const Color(0xFFA491FF).withOpacity(0.5), shape: BoxShape.circle),
+                    decoration: BoxDecoration(color: const Color(0xFFA491FF).withValues(alpha: 0.5), shape: BoxShape.circle),
                     child: const Center(child: Icon(LucideIcons.user, color: Colors.white, size: 20)),
                   ),
                 ],
@@ -713,8 +713,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                             Container(
                               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                               decoration: BoxDecoration(
-                                color: isUser ? const Color(0xFFA491FF).withOpacity(0.05) : const Color(0xFF2ED573).withOpacity(0.05),
-                                border: Border.all(color: isUser ? const Color(0xFFA491FF).withOpacity(0.2) : const Color(0xFF2ED573).withOpacity(0.2)),
+                                color: isUser ? const Color(0xFFA491FF).withValues(alpha: 0.05) : const Color(0xFF2ED573).withValues(alpha: 0.05),
+                                border: Border.all(color: isUser ? const Color(0xFFA491FF).withValues(alpha: 0.2) : const Color(0xFF2ED573).withValues(alpha: 0.2)),
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               child: Text(m.message, style: const TextStyle(color: Color(0xFFD1D5DB), fontSize: 15, height: 1.6)),
@@ -726,7 +726,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                         const SizedBox(width: 16),
                         Container(
                           width: 42, height: 42,
-                          decoration: BoxDecoration(color: const Color(0xFFA491FF).withOpacity(0.5), shape: BoxShape.circle),
+                          decoration: BoxDecoration(color: const Color(0xFFA491FF).withValues(alpha: 0.5), shape: BoxShape.circle),
                           child: const Center(child: Icon(LucideIcons.user, color: Colors.white, size: 20)),
                         ),
                       ],
@@ -758,8 +758,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
             decoration: BoxDecoration(
-              color: const Color(0xFFA491FF).withOpacity(0.05),
-              border: Border.all(color: const Color(0xFFA491FF).withOpacity(0.2)),
+              color: const Color(0xFFA491FF).withValues(alpha: 0.05),
+              border: Border.all(color: const Color(0xFFA491FF).withValues(alpha: 0.2)),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Row(
@@ -777,7 +777,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   Widget _buildDot() {
     return Container(
       width: 7, height: 7,
-      decoration: BoxDecoration(color: const Color(0xFF9B8FFF).withOpacity(0.7), shape: BoxShape.circle),
+      decoration: BoxDecoration(color: const Color(0xFF9B8FFF).withValues(alpha: 0.7), shape: BoxShape.circle),
     );
   }
 
@@ -788,7 +788,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
         gradient: LinearGradient(
           begin: Alignment.bottomCenter,
           end: Alignment.topCenter,
-          colors: [const Color(0xFF111119), const Color(0xFF111119).withOpacity(0)],
+          colors: [const Color(0xFF111119), const Color(0xFF111119).withValues(alpha: 0)],
         ),
       ),
       child: Column(
@@ -804,8 +804,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                     decoration: BoxDecoration(
-                      color: diag['type'] == 'sos' ? const Color(0xFFFF4757).withOpacity(0.08) : const Color(0xFF8A7EF8).withOpacity(0.08),
-                      border: Border.all(color: diag['type'] == 'sos' ? const Color(0xFFFF4757).withOpacity(0.25) : const Color(0xFF8A7EF8).withOpacity(0.25)),
+                      color: diag['type'] == 'sos' ? const Color(0xFFFF4757).withValues(alpha: 0.08) : const Color(0xFF8A7EF8).withValues(alpha: 0.08),
+                      border: Border.all(color: diag['type'] == 'sos' ? const Color(0xFFFF4757).withValues(alpha: 0.25) : const Color(0xFF8A7EF8).withValues(alpha: 0.25)),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
@@ -823,8 +823,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             decoration: BoxDecoration(
-              color: _isHumanSupport ? const Color(0xFF2ED573).withOpacity(0.05) : const Color(0xFFA491FF).withOpacity(0.03),
-              border: Border.all(color: _isHumanSupport ? const Color(0xFF2ED573).withOpacity(0.4) : const Color(0xFFA491FF).withOpacity(0.25)),
+              color: _isHumanSupport ? const Color(0xFF2ED573).withValues(alpha: 0.05) : const Color(0xFFA491FF).withValues(alpha: 0.03),
+              border: Border.all(color: _isHumanSupport ? const Color(0xFF2ED573).withValues(alpha: 0.4) : const Color(0xFFA491FF).withValues(alpha: 0.25)),
               borderRadius: BorderRadius.circular(12),
               boxShadow: const [BoxShadow(color: Colors.black26, blurRadius: 10)],
             ),
@@ -838,7 +838,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                     style: const TextStyle(color: Colors.white, fontSize: 15),
                     decoration: InputDecoration(
                       hintText: _isHumanSupport ? 'Digite sua mensagem para o psicólogo...' : 'Digite uma mensagem ou escolha uma opção acima...',
-                      hintStyle: TextStyle(color: Colors.white.withOpacity(0.25)),
+                      hintStyle: TextStyle(color: Colors.white.withValues(alpha: 0.25)),
                       border: InputBorder.none,
                     ),
                   ),
@@ -860,11 +860,11 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(LucideIcons.lock, size: 11, color: Colors.white.withOpacity(0.3)),
+                Icon(LucideIcons.lock, size: 11, color: Colors.white.withValues(alpha: 0.3)),
                 const SizedBox(width: 6),
                 Text(
                   _isHumanSupport ? 'Conversa anônima · Conectado com Especialista' : 'Conversa anônima · Enter para enviar',
-                  style: TextStyle(color: Colors.white.withOpacity(0.3), fontSize: 11),
+                  style: TextStyle(color: Colors.white.withValues(alpha: 0.3), fontSize: 11),
                 ),
               ],
             ),
@@ -877,7 +877,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   Widget _buildSOSOverlay() {
     return Positioned.fill(
       child: Container(
-        color: Colors.black.withOpacity(0.9),
+        color: Colors.black.withValues(alpha: 0.9),
         child: Center(
           child: NiraGlassCard(
             padding: const EdgeInsets.all(40),
@@ -889,8 +889,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                   Container(
                     width: 96, height: 96,
                     decoration: BoxDecoration(
-                      color: const Color(0xFFFF4757).withOpacity(0.1),
-                      border: Border.all(color: const Color(0xFFFF4757).withOpacity(0.4)),
+                      color: const Color(0xFFFF4757).withValues(alpha: 0.1),
+                      border: Border.all(color: const Color(0xFFFF4757).withValues(alpha: 0.4)),
                       shape: BoxShape.circle,
                     ),
                     child: const Center(child: Icon(LucideIcons.shield, color: Color(0xFFFF4757), size: 48)),
@@ -909,8 +909,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFFF4757).withOpacity(0.1),
-                      border: Border.all(color: const Color(0xFFFF4757).withOpacity(0.2)),
+                      color: const Color(0xFFFF4757).withValues(alpha: 0.1),
+                      border: Border.all(color: const Color(0xFFFF4757).withValues(alpha: 0.2)),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: const Text('Nossa equipe já está agindo.', style: TextStyle(color: Color(0xFFFF4757), fontSize: 12, fontWeight: FontWeight.bold, uppercase: true, letterSpacing: 1.5)),
@@ -919,8 +919,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                   Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.05),
-                      border: Border.all(color: Colors.white.withOpacity(0.05)),
+                      color: Colors.white.withValues(alpha: 0.05),
+                      border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
                       borderRadius: BorderRadius.circular(16),
                     ),
                     child: Row(
@@ -938,7 +938,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                       onPressed: () => setState(() => _sosConfirmed = false),
                       style: OutlinedButton.styleFrom(
                         foregroundColor: Colors.white,
-                        side: BorderSide(color: Colors.white.withOpacity(0.1)),
+                        side: BorderSide(color: Colors.white.withValues(alpha: 0.1)),
                         padding: const EdgeInsets.symmetric(vertical: 20),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                       ),
