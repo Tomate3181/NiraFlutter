@@ -381,6 +381,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                 child: Column(
                   children: [
                     _buildHeader(isMobile),
+                    _buildActionButtons(),
                     Expanded(
                       child: _chatAtivo ? _buildChatArea() : _buildWelcome(),
                     ),
@@ -638,62 +639,74 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
             alignment: WrapAlignment.end,
             spacing: 10,
             runSpacing: 8,
-            children: [
-              ElevatedButton.icon(
-                onPressed: _ativarSOS,
-                icon: const Icon(LucideIcons.alertTriangle, size: 14),
-                label: const Text('Acionar S.O.S.'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(
-                    0xFFFF4757,
-                  ).withValues(alpha: 0.1),
-                  foregroundColor: const Color(0xFFFF4757),
-                  elevation: 0,
-                  side: BorderSide(
-                    color: const Color(0xFFFF4757).withValues(alpha: 0.3),
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 12,
-                  ),
+            children: [],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildActionButtons() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+      decoration: BoxDecoration(
+        color: const Color(0xFF111119),
+        border: Border(
+          bottom: BorderSide(
+            color: const Color(0xFF9B8FFF).withValues(alpha: 0.05),
+          ),
+        ),
+      ),
+      child: Wrap(
+        spacing: 10,
+        runSpacing: 8,
+        children: [
+          ElevatedButton.icon(
+            onPressed: _ativarSOS,
+            icon: const Icon(LucideIcons.alertTriangle, size: 14),
+            label: const Text('Acionar S.O.S.'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFFFF4757).withValues(alpha: 0.1),
+              foregroundColor: const Color(0xFFFF4757),
+              elevation: 0,
+              side: BorderSide(
+                color: const Color(0xFFFF4757).withValues(alpha: 0.3),
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            ),
+          ),
+          if (_chatAtivo)
+            ElevatedButton.icon(
+              onPressed: _isHumanSupport ? null : _conectarAtendimentoHumano,
+              icon: const Icon(LucideIcons.messageSquare, size: 14),
+              label: Text(
+                _isHumanSupport ? 'Conexão Iniciada' : 'Atendimento Humano',
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: _isHumanSupport
+                    ? const Color(0xFF2ED573).withValues(alpha: 0.15)
+                    : Colors.transparent,
+                foregroundColor: _isHumanSupport
+                    ? const Color(0xFF2ED573)
+                    : Colors.white.withValues(alpha: 0.8),
+                elevation: 0,
+                side: BorderSide(
+                  color: _isHumanSupport
+                      ? const Color(0xFF2ED573).withValues(alpha: 0.4)
+                      : const Color(0xFF9B8FFF).withValues(alpha: 0.25),
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
                 ),
               ),
-              if (_chatAtivo)
-                ElevatedButton.icon(
-                  onPressed: _isHumanSupport
-                      ? null
-                      : _conectarAtendimentoHumano,
-                  icon: const Icon(LucideIcons.messageSquare, size: 14),
-                  label: Text(
-                    _isHumanSupport ? 'Conexão Iniciada' : 'Atendimento Humano',
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: _isHumanSupport
-                        ? const Color(0xFF2ED573).withValues(alpha: 0.15)
-                        : Colors.transparent,
-                    foregroundColor: _isHumanSupport
-                        ? const Color(0xFF2ED573)
-                        : Colors.white.withValues(alpha: 0.8),
-                    elevation: 0,
-                    side: BorderSide(
-                      color: _isHumanSupport
-                          ? const Color(0xFF2ED573).withValues(alpha: 0.4)
-                          : const Color(0xFF9B8FFF).withValues(alpha: 0.25),
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 12,
-                    ),
-                  ),
-                ),
-            ],
-          ),
+            ),
         ],
       ),
     );
