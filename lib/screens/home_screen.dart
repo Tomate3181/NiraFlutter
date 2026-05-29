@@ -52,7 +52,7 @@ class HomeScreen extends ConsumerWidget {
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            Colors.purpleAccent.withOpacity(0.05),
+            Colors.purpleAccent.withValues(alpha: 0.05),
             Colors.transparent,
           ],
         ),
@@ -262,7 +262,7 @@ class HomeScreen extends ConsumerWidget {
                       isStrokeCapRound: true,
                       belowBarData: BarAreaData(
                         show: true,
-                        color: Colors.purpleAccent.withOpacity(0.2),
+                        color: Colors.purpleAccent.withValues(alpha: 0.2),
                       ),
                     ),
                   ],
@@ -315,7 +315,7 @@ class HomeScreen extends ConsumerWidget {
                       Container(
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
-                          color: Colors.blueAccent.withOpacity(0.1),
+                          color: Colors.blueAccent.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Icon(d['icon'] as IconData, color: Colors.blueAccent),
@@ -430,7 +430,7 @@ class HomeScreen extends ConsumerWidget {
             shrinkWrap: true, // Garante que a lista não quebre o layout
             physics: const NeverScrollableScrollPhysics(), // Evita conflito de rolagem
             itemCount: faq.length,
-            separatorBuilder: (_, __) => const SizedBox(height: 16),
+            separatorBuilder: (_, _) => const SizedBox(height: 16),
             itemBuilder: (context, index) {
               final item = faq[index];
               return NiraGlassCard(
