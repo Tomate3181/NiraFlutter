@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons/lucide_icons.dart';
+import 'package:go_router/go_router.dart';
 import '../widgets/nira_glass_card.dart';
 import '../services/nira_supabase_service.dart';
 import '../models/nira_models.dart';
@@ -377,7 +378,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 InkWell(
-                  onTap: () => Navigator.of(context).pop(),
+                  onTap: () => GoRouter.of(context).go('/'),
                   child: Row(
                     children: [
                       Icon(
@@ -509,7 +510,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
             children: [
               if (isMobile) ...[
                 InkWell(
-                  onTap: () => Navigator.of(context).pop(),
+                  onTap: () => GoRouter.of(context).go('/'),
                   child: const Icon(
                     LucideIcons.arrowLeft,
                     color: Colors.white54,
