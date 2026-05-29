@@ -14,11 +14,17 @@ NiraSupabaseService niraSupabase(Ref ref) {
     // Tenta valores em tempo de compilação primeiro, depois cai no .env (se
     // foi carregado no `main`).
     String url = const String.fromEnvironment('SUPABASE_URL', defaultValue: '');
-    String anonKey = const String.fromEnvironment('SUPABASE_ANON_KEY', defaultValue: '');
+    String anonKey = const String.fromEnvironment(
+      'SUPABASE_ANON_KEY',
+      defaultValue: '',
+    );
 
     if (url.isEmpty || anonKey.isEmpty) {
-      final envUrl = dotenv.env['VITE_SUPABASE_URL'] ?? dotenv.env['SUPABASE_URL'];
-      final envKey = dotenv.env['VITE_SUPABASE_ANON_KEY'] ?? dotenv.env['SUPABASE_ANON_KEY'];
+      final envUrl =
+          dotenv.env['VITE_SUPABASE_URL'] ?? dotenv.env['SUPABASE_URL'];
+      final envKey =
+          dotenv.env['VITE_SUPABASE_ANON_KEY'] ??
+          dotenv.env['SUPABASE_ANON_KEY'];
       url = url.isNotEmpty ? url : (envUrl ?? '');
       anonKey = anonKey.isNotEmpty ? anonKey : (envKey ?? '');
     }
@@ -28,7 +34,9 @@ NiraSupabaseService niraSupabase(Ref ref) {
       return NiraSupabaseService(client);
     }
 
-    throw Exception('Supabase não inicializado. Forneça SUPABASE_URL e SUPABASE_ANON_KEY via --dart-define, .env, ou inicialize Supabase antes de usar o serviço.');
+    throw Exception(
+      'Supabase não inicializado. Forneça SUPABASE_URL e SUPABASE_ANON_KEY via --dart-define, .env, ou inicialize Supabase antes de usar o serviço.',
+    );
   }
 }
 
@@ -58,30 +66,41 @@ class NiraSupabaseService {
           .stream(primaryKey: ['id'])
           .eq('alert_id', chatRoomId)
           .order('created_at', ascending: true)
-          .map((data) => data.map((json) => ChatMessage.fromJson(json)).toList());
+          .map(
+            (data) => data.map((json) => ChatMessage.fromJson(json)).toList(),
+          );
     } catch (e) {
       throw Exception('Falha ao escutar chat anônimo: $e');
     }
   }
 
   /// 3. Disparar SOS
-  Future<void> dispararSOS(
+  Future<String?> dispararSOS(
     double latitude,
     double longitude,
     String usuarioId,
   ) async {
     try {
       final ticketCode = 'SOS-${DateTime.now().millisecondsSinceEpoch}';
+      final response = await _client
+          .from('alerts')
+          .insert({
+            'ticket_code': ticketCode,
+            'user_id': usuarioId,
+            'latitude': latitude,
+            'longitude': longitude,
+            'status': 'ATIVO',
+            'type': 'MAP',
+            'risk': 'ALTO',
+          })
+          .select('id')
+          .maybeSingle();
 
-      await _client.from('alerts').insert({
-        'ticket_code': ticketCode,
-        'user_id': usuarioId,
-        'latitude': latitude,
-        'longitude': longitude,
-        'status': 'ATIVO',
-        'type': 'MAP',
-        'risk': 'ALTO',
-      });
+      if (response != null && response['id'] != null) {
+        return response['id'] as String;
+      }
+
+      return null;
     } catch (e) {
       throw Exception('Falha ao disparar SOS: $e');
     }
@@ -94,8 +113,9 @@ class NiraSupabaseService {
     String remetenteRole,
   ) async {
     try {
-      final isAnonymous = remetenteRole.toLowerCase() == 'vitima' || 
-                          remetenteRole.toLowerCase() == 'anonimo';
+      final isAnonymous =
+          remetenteRole.toLowerCase() == 'vitima' ||
+          remetenteRole.toLowerCase() == 'anonimo';
 
       final payload = <String, dynamic>{
         'alert_id': chatRoomId,
@@ -110,9 +130,81 @@ class NiraSupabaseService {
         }
       }
 
+      // Ensure the alert exists. If chatRoomId is empty or doesn't match an
+      // existing alert, create a new alert of type CHAT and use its id.
+      String? alertIdToUse = chatRoomId;
+
+      if (alertIdToUse.isEmpty) {
+        final created = await _client
+            .from('alerts')
+            .insert({
+              'ticket_code': 'CHAT-${DateTime.now().millisecondsSinceEpoch}',
+              'user_id': null,
+              'status': 'ATIVO',
+              'type': 'CHAT',
+              'risk': 'BAIXO',
+            })
+            .select('id')
+            .maybeSingle();
+
+        if (created != null && created['id'] != null) {
+          alertIdToUse = created['id'] as String;
+        }
+      } else {
+        // Verify existence
+        final check = await _client
+            .from('alerts')
+            .select('id')
+            .eq('id', alertIdToUse)
+            .maybeSingle();
+        if (check == null) {
+          final created = await _client
+              .from('alerts')
+              .insert({
+                'ticket_code': 'CHAT-${DateTime.now().millisecondsSinceEpoch}',
+                'user_id': null,
+                'status': 'ATIVO',
+                'type': 'CHAT',
+                'risk': 'BAIXO',
+              })
+              .select('id')
+              .maybeSingle();
+          if (created != null && created['id'] != null) {
+            alertIdToUse = created['id'] as String;
+          }
+        }
+      }
+
+      payload['alert_id'] = alertIdToUse;
+
       await _client.from('chat_messages').insert(payload);
     } catch (e) {
       throw Exception('Falha ao enviar mensagem: $e');
+    }
+  }
+
+  /// Create a chat-type alert and return its id
+  Future<String?> criarChatAlert({String? usuarioId}) async {
+    try {
+      final response = await _client
+          .from('alerts')
+          .insert({
+            'ticket_code': 'CHAT-${DateTime.now().millisecondsSinceEpoch}',
+            'user_id': usuarioId,
+            'status': 'ATIVO',
+            'type': 'CHAT',
+            'risk': 'BAIXO',
+          })
+          .select('id')
+          .maybeSingle();
+
+      if (response != null && response['id'] != null) {
+        return response['id'] as String;
+      }
+
+      return null;
+    } catch (e) {
+      throw Exception('Falha ao criar alerta de chat: $e');
     }
   }
 

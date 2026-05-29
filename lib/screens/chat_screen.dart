@@ -149,14 +149,24 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     });
   }
 
-  void _iniciarChat() {
+  Future<void> _iniciarChat() async {
     setState(() {
       _chatAtivo = true;
       _isHumanSupport = false;
       _messages.clear();
       _riscoAtual = null;
-      _currentChatId = 'T${DateTime.now().millisecondsSinceEpoch}';
+      _currentChatId = '';
     });
+
+    try {
+      final service = ref.read(niraSupabaseProvider);
+      final created = await service.criarChatAlert();
+      if (created != null && created.isNotEmpty) {
+        setState(() => _currentChatId = created);
+      }
+    } catch (e) {
+      debugPrint('Erro ao criar alerta de chat: $e');
+    }
 
     final step = _flow.firstWhere((f) => f['id'] == 'start');
 
@@ -312,11 +322,17 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     // Integração com Supabase dispararSOS (coordenadas fictícias para exemplo de geolocalização)
     try {
       final service = ref.read(niraSupabaseProvider);
-      await service.dispararSOS(
+      final createdId = await service.dispararSOS(
         -23.550520,
         -46.633308,
         'anonimo',
       ); // Ex: Centro de SP
+
+      if (createdId != null && createdId.isNotEmpty) {
+        setState(() {
+          _currentChatId = createdId;
+        });
+      }
     } catch (e) {
       debugPrint('Erro ao disparar SOS: $e');
     }

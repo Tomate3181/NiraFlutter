@@ -46,3 +46,4 @@ app.*.map.json
 
 Plano_Migracao_NIRA.txt
 .env
+/bd/
