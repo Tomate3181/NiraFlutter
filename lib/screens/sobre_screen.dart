@@ -39,7 +39,7 @@ class SobreScreen extends StatelessWidget {
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            Colors.purpleAccent.withOpacity(0.05),
+            Colors.purpleAccent.withValues(alpha: 0.05),
             Colors.transparent,
           ],
         ),
@@ -56,7 +56,7 @@ class SobreScreen extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   decoration: BoxDecoration(
-                    border: Border.all(color: Colors.blueAccent.withOpacity(0.3)),
+                    border: Border.all(color: Colors.blueAccent.withValues(alpha: 0.3)),
                     borderRadius: BorderRadius.circular(100),
                   ),
                   child: const Text(
@@ -125,7 +125,7 @@ class SobreScreen extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.05),
+              color: Colors.white.withValues(alpha: 0.05),
               border: const Border(bottom: BorderSide(color: Colors.white10)),
             ),
             child: const Row(
@@ -170,14 +170,14 @@ class SobreScreen extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
-              color: isIa ? const Color(0xFF2D2B4E).withOpacity(0.75) : Colors.white.withOpacity(0.1),
+              color: isIa ? const Color(0xFF2D2B4E).withValues(alpha: 0.75) : Colors.white.withValues(alpha: 0.1),
               borderRadius: BorderRadius.only(
                 topLeft: const Radius.circular(16),
                 topRight: const Radius.circular(16),
                 bottomLeft: Radius.circular(isIa ? 0 : 16),
                 bottomRight: Radius.circular(isIa ? 16 : 0),
               ),
-              border: Border.all(color: isIa ? Colors.blueAccent.withOpacity(0.3) : Colors.white24),
+              border: Border.all(color: isIa ? Colors.blueAccent.withValues(alpha: 0.3) : Colors.white24),
             ),
             child: Text(text, style: const TextStyle(color: Colors.white, fontSize: 13, height: 1.5)),
           ),
@@ -359,9 +359,9 @@ class SobreScreen extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               decoration: BoxDecoration(
-                color: Colors.greenAccent.withOpacity(0.1),
+                color: Colors.greenAccent.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(100),
-                border: Border.all(color: Colors.greenAccent.withOpacity(0.2)),
+                border: Border.all(color: Colors.greenAccent.withValues(alpha: 0.2)),
               ),
               child: const Text('PRONTO PARA COMEÇAR?', style: TextStyle(color: Colors.greenAccent, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 2)),
             ),
