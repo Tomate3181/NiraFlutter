@@ -37,13 +37,13 @@ class NiraGlassCard extends StatelessWidget {
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                const Color(0xFF333333).withOpacity(blurOpacity + 0.05), // Cinza muito escuro
-                const Color(0xFF000000).withOpacity(blurOpacity),        // Preto puro
+                const Color(0xFF333333).withValues(alpha: blurOpacity + 0.05), // Cinza muito escuro
+                const Color(0xFF000000).withValues(alpha: blurOpacity),        // Preto puro
               ],
             ),
             // Contorno fino para simular a borda física do vidro (efeito cristal)
             border: Border.all(
-              color: Colors.white.withOpacity(0.12),
+              color: Colors.white.withValues(alpha: 0.12),
               width: 1.0,
             ),
           ),
