@@ -88,7 +88,7 @@ class ConteudosScreen extends ConsumerWidget {
         gradient: RadialGradient(
           center: const Alignment(0, -1.2),
           radius: 1.5,
-          colors: [Colors.purpleAccent.withOpacity(0.15), Colors.transparent],
+          colors: [Colors.purpleAccent.withValues(alpha: 0.15), Colors.transparent],
         ),
       ),
       child: Column(
@@ -107,8 +107,8 @@ class ConteudosScreen extends ConsumerWidget {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                       decoration: BoxDecoration(
-                        color: Colors.blueAccent.withOpacity(0.1),
-                        border: Border.all(color: Colors.blueAccent.withOpacity(0.2)),
+                        color: Colors.blueAccent.withValues(alpha: 0.1),
+                        border: Border.all(color: Colors.blueAccent.withValues(alpha: 0.2)),
                         borderRadius: BorderRadius.circular(100),
                       ),
                       child: const Row(
@@ -144,11 +144,11 @@ class ConteudosScreen extends ConsumerWidget {
                     hintStyle: const TextStyle(color: Colors.white38),
                     prefixIcon: const Icon(LucideIcons.search, color: Colors.white38),
                     filled: true,
-                    fillColor: Colors.white.withOpacity(0.05),
+                    fillColor: Colors.white.withValues(alpha: 0.05),
                     contentPadding: const EdgeInsets.symmetric(vertical: 20),
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: BorderSide(color: Colors.white.withOpacity(0.1))),
-                    enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: BorderSide(color: Colors.white.withOpacity(0.1))),
-                    focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: BorderSide(color: Colors.blueAccent.withOpacity(0.5))),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.1))),
+                    enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.1))),
+                    focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: BorderSide(color: Colors.blueAccent.withValues(alpha: 0.5))),
                   ),
                 ),
               ),
@@ -166,9 +166,9 @@ class ConteudosScreen extends ConsumerWidget {
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                   decoration: BoxDecoration(
-                    color: ativo ? Colors.blueAccent : Colors.white.withOpacity(0.05),
+                    color: ativo ? Colors.blueAccent : Colors.white.withValues(alpha: 0.05),
                     borderRadius: BorderRadius.circular(100),
-                    boxShadow: ativo ? [BoxShadow(color: Colors.blueAccent.withOpacity(0.3), blurRadius: 12)] : null,
+                    boxShadow: ativo ? [BoxShadow(color: Colors.blueAccent.withValues(alpha: 0.3), blurRadius: 12)] : null,
                   ),
                   child: Text(
                     c.toUpperCase(),
@@ -198,11 +198,11 @@ class ConteudosScreen extends ConsumerWidget {
           height: 500,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(48),
-            border: Border.all(color: Colors.white.withOpacity(0.05)),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
             image: DecorationImage(
               image: NetworkImage(destaque.imageUrl ?? 'https://images.unsplash.com/photo-1576091160550-217359971f8b?auto=format&fit=crop&q=80&w=800'),
               fit: BoxFit.cover,
-              colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.5), BlendMode.darken),
+              colorFilter: ColorFilter.mode(Colors.black.withValues(alpha: 0.5), BlendMode.darken),
             ),
           ),
           child: Container(
@@ -212,7 +212,7 @@ class ConteudosScreen extends ConsumerWidget {
               gradient: LinearGradient(
                 begin: Alignment.bottomCenter,
                 end: Alignment.topCenter,
-                colors: [const Color(0xFF07070B).withOpacity(0.9), Colors.transparent],
+                colors: [const Color(0xFF07070B).withValues(alpha: 0.9), Colors.transparent],
               ),
             ),
             child: Column(
@@ -322,7 +322,7 @@ class ConteudosScreen extends ConsumerWidget {
                         gradient: LinearGradient(
                           begin: Alignment.bottomCenter,
                           end: Alignment.topCenter,
-                          colors: [const Color(0xFF151521).withOpacity(0.9), Colors.transparent],
+                          colors: [const Color(0xFF151521).withValues(alpha: 0.9), Colors.transparent],
                         ),
                       ),
                     ),
@@ -332,9 +332,9 @@ class ConteudosScreen extends ConsumerWidget {
                       child: Container(
                         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
                         decoration: BoxDecoration(
-                          color: const Color(0xFF07070B).withOpacity(0.8),
+                          color: const Color(0xFF07070B).withValues(alpha: 0.8),
                           borderRadius: BorderRadius.circular(100),
-                          border: Border.all(color: Colors.blueAccent.withOpacity(0.2)),
+                          border: Border.all(color: Colors.blueAccent.withValues(alpha: 0.2)),
                         ),
                         child: Text(
                           art.category?.toUpperCase() ?? 'GERAL',
@@ -372,7 +372,7 @@ class ConteudosScreen extends ConsumerWidget {
                             Container(
                               width: 32,
                               height: 32,
-                              decoration: BoxDecoration(color: Colors.blueAccent.withOpacity(0.1), borderRadius: BorderRadius.circular(8)),
+                              decoration: BoxDecoration(color: Colors.blueAccent.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(8)),
                               child: const Center(child: Text('N', style: TextStyle(color: Colors.blueAccent, fontWeight: FontWeight.w900, fontSize: 10))),
                             ),
                             const SizedBox(width: 12),
@@ -405,7 +405,7 @@ class ConteudosScreen extends ConsumerWidget {
         children: [
           GestureDetector(
             onTap: () => ref.read(artigoAtivoProvider.notifier).state = null,
-            child: Container(color: const Color(0xFF07070B).withOpacity(0.9)),
+            child: Container(color: const Color(0xFF07070B).withValues(alpha: 0.9)),
           ),
           Center(
             child: Container(
@@ -415,8 +415,8 @@ class ConteudosScreen extends ConsumerWidget {
               decoration: BoxDecoration(
                 color: const Color(0xFF11111B),
                 borderRadius: BorderRadius.circular(isMobile ? 0 : 48),
-                border: Border.all(color: Colors.white.withOpacity(0.1)),
-                boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.5), blurRadius: 40)],
+                border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
+                boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.5), blurRadius: 40)],
               ),
               child: Stack(
                 children: [
@@ -513,8 +513,8 @@ class ConteudosScreen extends ConsumerWidget {
                               Container(
                                 padding: const EdgeInsets.all(40),
                                 decoration: BoxDecoration(
-                                  color: Colors.blueAccent.withOpacity(0.05),
-                                  border: Border.all(color: Colors.blueAccent.withOpacity(0.2)),
+                                  color: Colors.blueAccent.withValues(alpha: 0.05),
+                                  border: Border.all(color: Colors.blueAccent.withValues(alpha: 0.2)),
                                   borderRadius: BorderRadius.circular(32),
                                 ),
                                 child: Column(
