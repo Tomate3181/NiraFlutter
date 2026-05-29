@@ -92,4 +92,17 @@ class NiraSupabaseService {
       throw Exception('Falha ao enviar mensagem: $e');
     }
   }
+
+  /// 5. Buscar Artigos
+  Future<List<Article>> buscarArtigos() async {
+    try {
+      final response = await _client
+          .from('articles')
+          .select()
+          .order('created_at', ascending: false);
+      return response.map((json) => Article.fromJson(json)).toList();
+    } catch (e) {
+      throw Exception('Falha ao buscar artigos: $e');
+    }
+  }
 }
