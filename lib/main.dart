@@ -16,9 +16,18 @@ Future<void> main() async {
   // Primeiro, tentamos obter valores passados em tempo de compilação via
   // --dart-define. Se não existirem, carregamos o arquivo .env (se presente)
   // usando `flutter_dotenv`.
-  String supabaseUrl = const String.fromEnvironment('SUPABASE_URL', defaultValue: '');
-  String supabaseAnonKey = const String.fromEnvironment('SUPABASE_ANON_KEY', defaultValue: '');
-  String geminiApiKey = const String.fromEnvironment('GEMINI_API_KEY', defaultValue: '');
+  String supabaseUrl = const String.fromEnvironment(
+    'SUPABASE_URL',
+    defaultValue: '',
+  );
+  String supabaseAnonKey = const String.fromEnvironment(
+    'SUPABASE_ANON_KEY',
+    defaultValue: '',
+  );
+  String geminiApiKey = const String.fromEnvironment(
+    'GEMINI_API_KEY',
+    defaultValue: '',
+  );
 
   if (supabaseUrl.isEmpty || supabaseAnonKey.isEmpty || geminiApiKey.isEmpty) {
     try {
@@ -27,18 +36,27 @@ Future<void> main() async {
       // Ignore if .env is missing — we'll handle empties below.
     }
 
-    supabaseUrl = supabaseUrl.isNotEmpty ? supabaseUrl : (dotenv.env['VITE_SUPABASE_URL'] ?? dotenv.env['SUPABASE_URL'] ?? '');
-    supabaseAnonKey = supabaseAnonKey.isNotEmpty ? supabaseAnonKey : (dotenv.env['VITE_SUPABASE_ANON_KEY'] ?? dotenv.env['SUPABASE_ANON_KEY'] ?? '');
-    geminiApiKey = geminiApiKey.isNotEmpty ? geminiApiKey : (dotenv.env['VITE_GEMINI_API_KEY'] ?? dotenv.env['GEMINI_API_KEY'] ?? '');
+    supabaseUrl = supabaseUrl.isNotEmpty
+        ? supabaseUrl
+        : (dotenv.env['VITE_SUPABASE_URL'] ?? dotenv.env['SUPABASE_URL'] ?? '');
+    supabaseAnonKey = supabaseAnonKey.isNotEmpty
+        ? supabaseAnonKey
+        : (dotenv.env['VITE_SUPABASE_ANON_KEY'] ??
+              dotenv.env['SUPABASE_ANON_KEY'] ??
+              '');
+    geminiApiKey = geminiApiKey.isNotEmpty
+        ? geminiApiKey
+        : (dotenv.env['VITE_GEMINI_API_KEY'] ??
+              dotenv.env['GEMINI_API_KEY'] ??
+              '');
   }
 
   if (supabaseUrl.isNotEmpty && supabaseAnonKey.isNotEmpty) {
-    await Supabase.initialize(
-      url: supabaseUrl,
-      anonKey: supabaseAnonKey,
-    );
+    await Supabase.initialize(url: supabaseUrl, anonKey: supabaseAnonKey);
   } else {
-    debugPrint('SUPABASE_URL or SUPABASE_ANON_KEY not provided; Supabase not initialized.');
+    debugPrint(
+      'SUPABASE_URL or SUPABASE_ANON_KEY not provided; Supabase not initialized.',
+    );
   }
 
   runApp(const ProviderScope(child: MyApp()));
@@ -53,11 +71,36 @@ class MyApp extends StatelessWidget {
       ShellRoute(
         builder: (context, state, child) => MainScaffold(child: child),
         routes: [
-          GoRoute(path: '/', name: 'home', builder: (context, state) => const HomeScreen()),
-          GoRoute(path: '/conteudos', name: 'conteudos', builder: (context, state) => const ConteudosScreen()),
-          GoRoute(path: '/chat', name: 'chat', builder: (context, state) => const ChatScreen()),
-          GoRoute(path: '/como', name: 'como', builder: (context, state) => const ComoFuncionaScreen()),
-          GoRoute(path: '/sobre', name: 'sobre', builder: (context, state) => const SobreScreen()),
+          GoRoute(
+            path: '/',
+            name: 'home',
+            builder: (context, state) => const HomeScreen(),
+          ),
+          GoRoute(
+            path: '/conteudos',
+            name: 'conteudos',
+            builder: (context, state) => const ConteudosScreen(),
+          ),
+          GoRoute(
+            path: '/chat',
+            name: 'chat',
+            builder: (context, state) {
+              final extra = state.extra as Map<String, dynamic>?;
+              final sos = extra?['sos'] == true;
+              final start = extra?['start'] == true;
+              return ChatScreen(startWithSos: sos, startChat: start);
+            },
+          ),
+          GoRoute(
+            path: '/como',
+            name: 'como',
+            builder: (context, state) => const ComoFuncionaScreen(),
+          ),
+          GoRoute(
+            path: '/sobre',
+            name: 'sobre',
+            builder: (context, state) => const SobreScreen(),
+          ),
         ],
       ),
     ],
@@ -115,7 +158,12 @@ class MainScaffold extends StatelessWidget {
         selectedItemColor: Colors.blueAccent,
         unselectedItemColor: Colors.white54,
         type: BottomNavigationBarType.fixed,
-        items: _navItems.map((it) => BottomNavigationBarItem(icon: Icon(it.icon), label: it.label)).toList(),
+        items: _navItems
+            .map(
+              (it) =>
+                  BottomNavigationBarItem(icon: Icon(it.icon), label: it.label),
+            )
+            .toList(),
       ),
     );
   }

@@ -8,8 +8,7 @@ import 'package:fl_chart/fl_chart.dart';
 import '../widgets/nira_glass_card.dart';
 import '../services/nira_supabase_service.dart';
 import '../models/nira_models.dart';
-import 'chat_screen.dart';
-import 'como_funciona_screen.dart';
+import 'package:go_router/go_router.dart';
 
 // Provider temporário para ouvir a stream de alertas (Dashboard)
 final alertasStreamProvider = StreamProvider.autoDispose<List<Alert>>((ref) {
@@ -91,12 +90,9 @@ class HomeScreen extends ConsumerWidget {
             alignment: isMobile ? WrapAlignment.center : WrapAlignment.start,
             children: [
               ElevatedButton.icon(
-                onPressed: () => Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) =>
-                        const ChatScreen(startWithSos: true, startChat: true),
-                  ),
-                ),
+                onPressed: () => GoRouter.of(
+                  context,
+                ).go('/chat', extra: {'sos': true, 'start': true}),
                 icon: const Icon(LucideIcons.alertTriangle),
                 label: const Text('ACIONAR S.O.S AGORA'),
                 style: ElevatedButton.styleFrom(
@@ -113,9 +109,7 @@ class HomeScreen extends ConsumerWidget {
                 ),
               ),
               OutlinedButton.icon(
-                onPressed: () => Navigator.of(context).push(
-                  MaterialPageRoute(builder: (_) => const ComoFuncionaScreen()),
-                ),
+                onPressed: () => context.go('/como'),
                 icon: const Icon(LucideIcons.bookOpen),
                 label: const Text('COMO FUNCIONA'),
                 style: OutlinedButton.styleFrom(
