@@ -24,6 +24,16 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
+    final isMobile = screenSize.width < 800;
+    final imageTop = isMobile
+        ? screenSize.height * 0.06
+        : screenSize.height * 0.08;
+    final imageSideOffset = isMobile
+        ? -screenSize.width * 0.03
+        : -screenSize.width * 0.15;
+    final imageBottom = isMobile
+        ? -screenSize.height * 0.02
+        : -screenSize.height * 0.1;
 
     return Scaffold(
       backgroundColor: _kBgMain,
@@ -50,18 +60,22 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             ),
           ),
 
-          // 2. A IMAGEM DO PERSONAGEM (image_e1d73f.png) - Responsiva
+          // 2. A IMAGEM DO PERSONAGEM (home-img.png) - Responsiva de verdade
           Positioned(
-            top: screenSize.height * 0.08, // Começa um pouco abaixo do navbar
-            left: -screenSize.width * 0.15, // Sai um pouco da esquerda
-            right: -screenSize.width * 0.15, // Sai um pouco da direita
-            bottom: -screenSize.height * 0.1, // Desce além da bottom nav
+            top: 0,
+            bottom: 0,
+            left: 0,
+            right: 0,
             child: Opacity(
-              opacity: 0.95,
+              opacity: isMobile ? 0.9 : 0.95,
               child: Image.asset(
                 'assets/images/home-img.png',
-                fit: BoxFit.cover,
-                alignment: Alignment.center,
+                // SE FOR MOBILE: Cobre a tela toda.
+                // SE FOR TELA LARGA: Trava na altura máxima sem dar super-zoom.
+                fit: isMobile ? BoxFit.cover : BoxFit.fitHeight,
+
+                // Centraliza na tela larga e cola no topo no mobile
+                alignment: isMobile ? Alignment.topCenter : Alignment.center,
               ),
             ),
           ),
