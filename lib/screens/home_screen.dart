@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:go_router/go_router.dart';
-import '../widgets/nira_glass_card.dart';
+// import '../widgets/nira_glass_card.dart'; // Mantenha se for usar depois
 
 // ── Paleta de marca (alinhada com o site React) ────────────────────────────
 const _kBrandPrimary = Color(0xFF8B7EFA);
-const _kBgMain = Color(0xFF11111B);
+const _kBgMain = Color(0xFF11111B); // Fundo bem escuro
 const _kBgSecondary = Color(0xFF1E1E2E);
 const _kBorder = Color(0xFF2B2B3C);
 const _kTextMuted = Color(0xFFA6A6B0);
@@ -22,66 +22,118 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
-  // Removed orb animations (hero simplified)
-  late final AnimationController _orbCtrl;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _orbCtrl = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 4),
-    );
-  }
-
-  @override
-  void dispose() {
-    _orbCtrl.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
+    final screenSize = MediaQuery.of(context).size;
+
     return Scaffold(
       backgroundColor: _kBgMain,
-      body: SafeArea(
-        child: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _buildHero(context),
-              const SizedBox(height: 24),
-              _buildActionCards(context),
-            ],
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(56),
+        child: Container(
+          decoration: BoxDecoration(
+            color: _kBgMain,
+            border: Border(
+              bottom: BorderSide(
+                color: _kBorder.withValues(alpha: 0.3),
+              ),
+            ),
+          ),
+          child: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    'Nira',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 24,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: 1,
+                    ),
+                  ),
+                  _buildSosButton(context),
+                ],
+              ),
+            ),
           ),
         ),
       ),
-    );
-  }
+      body: Stack(
+        children: [
+          // 1. O GLOW ROXO DE FUNDO
+          Positioned(
+            top: -screenSize.height * 0.05,
+            left: 0,
+            right: 0,
+            child: Container(
+              height: screenSize.height * 0.7,
+              decoration: BoxDecoration(
+                gradient: RadialGradient(
+                  center: const Alignment(0.0, -0.2),
+                  radius: 0.8,
+                  colors: [
+                    _kBrandPrimary.withValues(alpha: 0.35), // Roxo neon difuso
+                    Colors.transparent,
+                  ],
+                ),
+              ),
+            ),
+          ),
 
-  // ── HERO ───────────────────────────────────────────────────────────────────
-  Widget _buildHero(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 36),
-      decoration: const BoxDecoration(
-        gradient: RadialGradient(
-          center: Alignment(0.7, -1.0),
-          radius: 1.5,
-          colors: [Color(0x208B7EFA), Colors.transparent],
-        ),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: const [
-          Text(
-            'NIRA',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 56,
-              fontWeight: FontWeight.w900,
-              letterSpacing: 6,
+          // 2. A IMAGEM DO PERSONAGEM (image_e1d73f.png)
+          Positioned(
+            top: screenSize.height * 0.12, // Desce mais para cobrir até bottom nav
+            left: 0,
+            right: 0,
+            bottom: 0,
+            child: Opacity(
+              opacity: 0.9,
+              child: Image.asset(
+                'assets/images/home-img.png', // Certifique-se do caminho
+                fit: BoxFit.cover,
+                alignment: Alignment.center,
+              ),
+            ),
+          ),
+
+          // 3. GRADIENTE DE FUSÃO (Apaga a base da foto e prepara o fundo para os botões)
+          Positioned.fill(
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.transparent,
+                    _kBgMain.withValues(alpha: 0.5),
+                    _kBgMain,
+                    _kBgMain, // Cor sólida total na parte inferior
+                  ],
+                  stops: const [0.35, 0.55, 0.7, 1.0],
+                ),
+              ),
+            ),
+          ),
+
+          // 4. INTERFACE DO USUÁRIO (Na frente de tudo)
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const SizedBox(height: 24),
+                  _buildHeroTitle(), // Novo título baseado no React
+
+                  const Spacer(), // Empurra os cards para baixo
+
+                  _buildActionCards(context),
+                  const SizedBox(height: 16), // Espaçamento na base
+                ],
+              ),
             ),
           ),
         ],
@@ -89,93 +141,151 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
-  // ── ACTION CARDS ───────────────────────────────────────────────────────────
-  Widget _buildActionCards(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
-      child: Column(
-        children: [
-          // SOS — destaque máximo, full-width
-          _ActionCard(
-            icon: LucideIcons.alertTriangle,
-            title: 'S.O.S. Emergência',
-            subtitle: 'Acionar socorro silencioso agora',
-            color: _kEmergency,
-            isPrimary: true,
-            isPulsing: true,
-            onTap: () => GoRouter.of(
-              context,
-            ).go('/chat', extra: {'sos': true, 'start': true}),
+  // ── S.O.S. BUTTON (AppBar) ────────────────────────────────────────────────
+  Widget _buildSosButton(BuildContext context) {
+    return InkWell(
+      onTap: () => GoRouter.of(context)
+          .go('/chat', extra: {'sos': true, 'start': true}),
+      borderRadius: BorderRadius.circular(20),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+        decoration: BoxDecoration(
+          color: _kEmergency.withValues(alpha: 0.15),
+          border: Border.all(
+            color: _kEmergency.withValues(alpha: 0.4),
           ),
-          const SizedBox(height: 10),
-
-          // Chat + Conteúdos
-          Row(
-            children: [
-              Expanded(
-                child: _ActionCard(
-                  icon: LucideIcons.messageSquare,
-                  title: 'Chat NIRA',
-                  subtitle: 'Converse de forma anônima',
-                  color: _kBrandPrimary,
-                  onTap: () =>
-                      GoRouter.of(context).go('/chat', extra: {'start': true}),
-                ),
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              LucideIcons.alertTriangle,
+              color: _kEmergency,
+              size: 16,
+            ),
+            const SizedBox(width: 6),
+            const Text(
+              'S.O.S',
+              style: TextStyle(
+                color: _kEmergency,
+                fontSize: 12,
+                fontWeight: FontWeight.w900,
+                letterSpacing: 1.2,
               ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: _ActionCard(
-                  icon: LucideIcons.bookOpen,
-                  title: 'Conteúdos',
-                  subtitle: 'Guias e orientações',
-                  color: const Color(0xFF38B2AC),
-                  onTap: () => GoRouter.of(context).go('/conteudos'),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 10),
-
-          // Como Funciona + Sobre
-          Row(
-            children: [
-              Expanded(
-                child: _ActionCard(
-                  icon: LucideIcons.helpCircle,
-                  title: 'Como Funciona',
-                  subtitle: 'Entenda a plataforma',
-                  color: const Color(0xFFED8936),
-                  onTap: () => GoRouter.of(context).go('/como'),
-                ),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: _ActionCard(
-                  icon: LucideIcons.users,
-                  title: 'Sobre a NIRA',
-                  subtitle: 'Nossa missão e equipe',
-                  color: const Color(0xFF48BB78),
-                  onTap: () => GoRouter.of(context).go('/sobre'),
-                ),
-              ),
-            ],
-          ),
-        ],
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  // ── DORES ──────────────────────────────────────────────────────────────────
-  // Removed: _buildDores (section removed per redesign)
+  // ── TEXTOS DO HERO (Alinhado com a versão Web) ───────────────────────────
+  Widget _buildHeroTitle() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          'PROTEÇÃO • ACOLHIMENTO • ANONIMATO',
+          style: TextStyle(
+            color: _kBrandPrimary.withValues(alpha: 0.9),
+            fontSize: 10,
+            fontWeight: FontWeight.w800,
+            letterSpacing: 2,
+          ),
+        ),
+        const SizedBox(height: 8),
+        const Text(
+          'Porto seguro\ndigital',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 40,
+            fontWeight: FontWeight.w900,
+            height: 1.1,
+            letterSpacing: -1,
+          ),
+        ),
+      ],
+    );
+  }
 
-  // ── PARA QUEM ──────────────────────────────────────────────────────────────
-  // Removed: _buildParaQuem (section removed per redesign)
+  // ── ACTION CARDS ───────────────────────────────────────────────────────────
+  Widget _buildActionCards(BuildContext context) {
+    return Column(
+      children: [
+        // SOS — destaque máximo, full-width
+        _ActionCard(
+          icon: LucideIcons.alertTriangle,
+          title: 'S.O.S. Emergência',
+          subtitle: 'Acionar socorro silencioso agora',
+          color: _kEmergency,
+          isPrimary: true,
+          isPulsing: true,
+          onTap: () => GoRouter.of(
+            context,
+          ).go('/chat', extra: {'sos': true, 'start': true}),
+        ),
+        const SizedBox(height: 12),
 
-  // Removed: _buildCheckItem (no longer used)
+        // Chat + Conteúdos
+        Row(
+          children: [
+            Expanded(
+              child: _ActionCard(
+                icon: LucideIcons.messageSquare,
+                title: 'Chat NIRA',
+                subtitle: 'Converse de forma anônima',
+                color: _kBrandPrimary,
+                onTap: () =>
+                    GoRouter.of(context).go('/chat', extra: {'start': true}),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: _ActionCard(
+                icon: LucideIcons.bookOpen,
+                title: 'Conteúdos',
+                subtitle: 'Guias e orientações',
+                color: const Color(0xFF38B2AC),
+                onTap: () => GoRouter.of(context).go('/conteudos'),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+
+        // Como Funciona + Sobre
+        Row(
+          children: [
+            Expanded(
+              child: _ActionCard(
+                icon: LucideIcons.helpCircle,
+                title: 'Como Funciona',
+                subtitle: 'Entenda a plataforma',
+                color: const Color(0xFFED8936),
+                onTap: () => GoRouter.of(context).go('/como'),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: _ActionCard(
+                icon: LucideIcons.users,
+                title: 'Sobre a NIRA',
+                subtitle: 'Nossa missão e equipe',
+                color: const Color(0xFF48BB78),
+                onTap: () => GoRouter.of(context).go('/sobre'),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
-// _ActionCard — cartão grande e tappável com efeito de pulso no SOS
+// _ActionCard — Com efeito Glassmorphism suave
 // ══════════════════════════════════════════════════════════════════════════════
 class _ActionCard extends StatefulWidget {
   final IconData icon;
@@ -236,20 +346,25 @@ class _ActionCardState extends State<_ActionCard>
         highlightColor: widget.color.withValues(alpha: 0.08),
         child: AnimatedBuilder(
           animation: _pulseAnim,
-          builder: (_, __) => Container(
+          builder: (_, _) => Container(
             padding: EdgeInsets.symmetric(
-              horizontal: 16,
+              horizontal: 14,
               vertical: widget.isPrimary ? 18 : 14,
             ),
             decoration: BoxDecoration(
+              // Aplicação do Glassmorphism (fundos translúcidos)
               color: widget.isPrimary
-                  ? widget.color.withValues(alpha: 0.10)
-                  : _kBgSecondary,
+                  ? widget.color.withValues(alpha: 0.12)
+                  : _kBgSecondary.withValues(
+                      alpha: 0.5,
+                    ), // Fundo mais transparente
               borderRadius: BorderRadius.circular(16),
               border: Border.all(
                 color: widget.isPrimary
                     ? widget.color.withValues(alpha: 0.40)
-                    : _kBorder,
+                    : Colors.white.withValues(
+                        alpha: 0.05,
+                      ), // Borda fina e reflexiva
               ),
               boxShadow: widget.isPulsing
                   ? [
@@ -278,7 +393,7 @@ class _ActionCardState extends State<_ActionCard>
                     size: widget.isPrimary ? 22 : 18,
                   ),
                 ),
-                const SizedBox(width: 14),
+                const SizedBox(width: 12),
                 // Textos
                 Expanded(
                   child: Column(
@@ -289,30 +404,31 @@ class _ActionCardState extends State<_ActionCard>
                         style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
-                          fontSize: widget.isPrimary ? 15 : 13,
+                          fontSize: widget.isPrimary ? 16 : 13,
                         ),
                       ),
                       const SizedBox(height: 2),
                       Text(
                         widget.subtitle,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                         style: TextStyle(
                           color: widget.isPrimary
                               ? widget.color.withValues(alpha: 0.85)
                               : _kTextMuted,
-                          fontSize: 11.5,
+                          fontSize: 11,
                         ),
                       ),
                     ],
                   ),
                 ),
-                // Seta
-                Icon(
-                  LucideIcons.arrowRight,
-                  color: widget.isPrimary
-                      ? widget.color.withValues(alpha: 0.8)
-                      : _kBorder,
-                  size: 16,
-                ),
+                // Seta removida dos cards menores para ficar mais limpo
+                if (widget.isPrimary)
+                  Icon(
+                    LucideIcons.arrowRight,
+                    color: widget.color.withValues(alpha: 0.8),
+                    size: 18,
+                  ),
               ],
             ),
           ),
@@ -321,62 +437,3 @@ class _ActionCardState extends State<_ActionCard>
     );
   }
 }
-
-// ══════════════════════════════════════════════════════════════════════════════
-// Helpers
-// ══════════════════════════════════════════════════════════════════════════════
-class _PulsingDot extends StatefulWidget {
-  final Color color;
-  const _PulsingDot({required this.color});
-
-  @override
-  State<_PulsingDot> createState() => _PulsingDotState();
-}
-
-class _PulsingDotState extends State<_PulsingDot>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _ctrl;
-  late final Animation<double> _opacity;
-
-  @override
-  void initState() {
-    super.initState();
-    _ctrl = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 2),
-    )..repeat(reverse: true);
-    _opacity = Tween<double>(
-      begin: 0.4,
-      end: 1.0,
-    ).animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeInOut));
-  }
-
-  @override
-  void dispose() {
-    _ctrl.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: _opacity,
-      builder: (_, __) => Container(
-        width: 6,
-        height: 6,
-        decoration: BoxDecoration(
-          color: widget.color.withValues(alpha: _opacity.value),
-          borderRadius: BorderRadius.circular(3),
-          boxShadow: [
-            BoxShadow(
-              color: widget.color.withValues(alpha: 0.6 * _opacity.value),
-              blurRadius: 6,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// _CardHeader removed — sections simplified on HomeScreen
