@@ -3,17 +3,23 @@ import 'package:lucide_icons/lucide_icons.dart';
 import 'package:go_router/go_router.dart';
 import '../widgets/nira_glass_card.dart';
 
+// ── Paleta de marca ────────────────────────────────────────────────────────
+const _kBrandPrimary = Color(0xFF8B7EFA);
+const _kBgMain       = Color(0xFF11111B);
+const _kBgSecondary  = Color(0xFF1E1E2E);
+const _kBorder       = Color(0xFF2B2B3C);
+const _kTextMuted    = Color(0xFFA6A6B0);
+
 class ComoFuncionaScreen extends StatelessWidget {
   const ComoFuncionaScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // Validação de responsividade nativa e segura
     final screenWidth = MediaQuery.sizeOf(context).width;
     final isMobile = screenWidth < 800;
 
     return Scaffold(
-      backgroundColor: const Color(0xFF07070B),
+      backgroundColor: _kBgMain,
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -41,7 +47,7 @@ class ComoFuncionaScreen extends StatelessWidget {
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            Colors.blueAccent.withValues(alpha: 0.05),
+            _kBrandPrimary.withValues(alpha: 0.05),
             Colors.transparent,
           ],
         ),
@@ -51,16 +57,14 @@ class ComoFuncionaScreen extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             decoration: BoxDecoration(
-              color: Colors.blueAccent.withValues(alpha: 0.1),
+              color: _kBrandPrimary.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(32),
-              border: Border.all(
-                color: Colors.blueAccent.withValues(alpha: 0.2),
-              ),
+              border: Border.all(color: _kBrandPrimary.withValues(alpha: 0.2)),
             ),
             child: const Text(
               'ARQUITETURA DE PROTEÇÃO',
               style: TextStyle(
-                color: Colors.blueAccent,
+                color: _kBrandPrimary,
                 fontWeight: FontWeight.bold,
                 fontSize: 10,
                 letterSpacing: 2,
@@ -83,7 +87,7 @@ class ComoFuncionaScreen extends StatelessWidget {
           const Text(
             'O ecossistema Nira combina um chatbot acolhedor com uma rede de especialistas humanos para criar uma ponte segura entre a dor e a proteção.',
             textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 18, color: Colors.white70, height: 1.5),
+            style: TextStyle(fontSize: 18, color: _kTextMuted, height: 1.5),
           ),
         ],
       ),
@@ -95,31 +99,30 @@ class ComoFuncionaScreen extends StatelessWidget {
       {
         'icon': LucideIcons.shield,
         'title': 'Privacidade Radical',
-        'desc':
-            'Sua identidade é protegida por criptografia e protocolos de anonimato total.',
-        'color': Colors.blueAccent,
+        'desc': 'Sua identidade é protegida por criptografia e protocolos de anonimato total.',
+        'color': _kBrandPrimary,
       },
       {
         'icon': LucideIcons.zap,
         'title': 'Velocidade Crítica',
-        'desc':
-            'Segundos salvam vidas. Nossa resposta é instantânea e automatizada.',
-        'color': Colors.redAccent,
+        'desc': 'Segundos salvam vidas. Nossa resposta é instantânea e automatizada.',
+        'color': const Color(0xFFE53E3E),
       },
       {
         'icon': LucideIcons.users,
         'title': 'Rede Humana',
-        'desc':
-            'A tecnologia é a ponte, mas o destino final é sempre o acolhimento humano.',
-        'color': Colors.greenAccent,
+        'desc': 'A tecnologia é a ponte, mas o destino final é sempre o acolhimento humano.',
+        'color': const Color(0xFF48BB78),
       },
     ];
 
     return Container(
       padding: EdgeInsets.all(isMobile ? 24 : 64),
-      decoration: const BoxDecoration(
-        color: Color(0xFF11111A),
-        border: Border.symmetric(horizontal: BorderSide(color: Colors.white10)),
+      decoration: BoxDecoration(
+        color: _kBgSecondary,
+        border: Border.symmetric(
+          horizontal: BorderSide(color: _kBorder),
+        ),
       ),
       child: Flex(
         direction: isMobile ? Axis.vertical : Axis.horizontal,
@@ -137,7 +140,7 @@ class ComoFuncionaScreen extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.05),
+                          color: (p['color'] as Color).withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(16),
                         ),
                         child: Icon(
@@ -159,10 +162,7 @@ class ComoFuncionaScreen extends StatelessWidget {
                       Text(
                         p['desc'] as String,
                         textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          color: Colors.white70,
-                          fontSize: 14,
-                        ),
+                        style: const TextStyle(color: _kTextMuted, fontSize: 14),
                       ),
                     ],
                   ),
@@ -180,53 +180,37 @@ class ComoFuncionaScreen extends StatelessWidget {
         'id': '01',
         'title': 'Silêncio e Segurança',
         'subtitle': 'O Primeiro Contato',
-        'desc':
-            'O acesso à Nira é totalmente anônimo. Não pedimos CPF, nome ou telefone. Um botão de "Saída Rápida" está sempre visível.',
+        'desc': 'O acesso à Nira é totalmente anônimo. Não pedimos CPF, nome ou telefone. Um botão de "Saída Rápida" está sempre visível.',
         'icon': LucideIcons.eyeOff,
-        'color': Colors.blueAccent,
+        'color': _kBrandPrimary,
         'features': ['Zero Logs de IP', 'Sem Cadastro Prévio', 'Modo Furtivo'],
       },
       {
         'id': '02',
         'title': 'Triagem Humanizada',
         'subtitle': 'Escuta Ativa Digital',
-        'desc':
-            'Nosso chatbot acolhedor realiza uma triagem estruturada identificando o nível de risco e tipo de abuso, preparando terreno para suporte.',
+        'desc': 'Nosso chatbot acolhedor realiza uma triagem estruturada identificando o nível de risco e tipo de abuso, preparando terreno para suporte.',
         'icon': LucideIcons.messageSquare,
-        'color': Colors.purpleAccent,
-        'features': [
-          'Linguagem Acolhedora',
-          'Protocolo Científico',
-          'Triagem Automática',
-        ],
+        'color': const Color(0xFFB794F4),
+        'features': ['Linguagem Acolhedora', 'Protocolo Científico', 'Triagem Automática'],
       },
       {
         'id': '03',
         'title': 'Resposta Imediata',
         'subtitle': 'Ação em Tempo Real',
-        'desc':
-            'Se o risco for alto, sua localização vai para equipes de pronta resposta. Senão, conectamos você a uma especialista no chat.',
+        'desc': 'Se o risco for alto, sua localização vai para equipes de pronta resposta. Senão, conectamos você a uma especialista no chat.',
         'icon': LucideIcons.zap,
-        'color': Colors.redAccent,
-        'features': [
-          'Alerta Silencioso',
-          'Geolocalização Ativa',
-          'Conexão Especializada',
-        ],
+        'color': const Color(0xFFE53E3E),
+        'features': ['Alerta Silencioso', 'Geolocalização Ativa', 'Conexão Especializada'],
       },
       {
         'id': '04',
         'title': 'Cuidado Contínuo',
         'subtitle': 'A Rede de Apoio',
-        'desc':
-            'O suporte não termina no chat. Mapeamos e encaminhamos você para ONGs, delegacias e abrigos da rede física.',
+        'desc': 'O suporte não termina no chat. Mapeamos e encaminhamos você para ONGs, delegacias e abrigos da rede física.',
         'icon': LucideIcons.heartHandshake,
-        'color': Colors.greenAccent,
-        'features': [
-          'Mapeamento de ONGs',
-          'Encaminhamento VIP',
-          'Apoio Constante',
-        ],
+        'color': const Color(0xFF48BB78),
+        'features': ['Mapeamento de ONGs', 'Encaminhamento VIP', 'Apoio Constante'],
       },
     ];
 
@@ -256,7 +240,7 @@ class ComoFuncionaScreen extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 48,
                     fontWeight: FontWeight.w900,
-                    color: Colors.white12,
+                    color: Color(0x1FFFFFFF),
                   ),
                 ),
               ],
@@ -284,13 +268,13 @@ class ComoFuncionaScreen extends StatelessWidget {
             Text(
               stage['desc'] as String,
               style: const TextStyle(
-                color: Colors.white70,
+                color: _kTextMuted,
                 fontSize: 16,
                 height: 1.5,
               ),
             ),
             const SizedBox(height: 24),
-            const Divider(color: Colors.white10),
+            const Divider(color: _kBorder),
             const SizedBox(height: 16),
             Wrap(
               spacing: 12,
@@ -299,16 +283,12 @@ class ComoFuncionaScreen extends StatelessWidget {
                 return Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(
-                      LucideIcons.checkCircle2,
-                      size: 14,
-                      color: stage['color'] as Color,
-                    ),
+                    Icon(LucideIcons.checkCircle2, size: 14, color: stage['color'] as Color),
                     const SizedBox(width: 6),
                     Text(
                       feat,
                       style: const TextStyle(
-                        color: Colors.white54,
+                        color: _kTextMuted,
                         fontSize: 10,
                         fontWeight: FontWeight.bold,
                         letterSpacing: 1,
@@ -341,7 +321,7 @@ class ComoFuncionaScreen extends StatelessWidget {
             width: 120,
             margin: const EdgeInsets.only(top: 16, bottom: 48),
             decoration: BoxDecoration(
-              color: Colors.blueAccent,
+              color: _kBrandPrimary,
               borderRadius: BorderRadius.circular(3),
             ),
           ),
@@ -393,7 +373,7 @@ class ComoFuncionaScreen extends StatelessWidget {
           end: Alignment.bottomCenter,
           colors: [
             Colors.transparent,
-            Colors.blueAccent.withValues(alpha: 0.05),
+            _kBrandPrimary.withValues(alpha: 0.05),
             Colors.transparent,
           ],
         ),
@@ -403,16 +383,13 @@ class ComoFuncionaScreen extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
             decoration: BoxDecoration(
-              color: const Color(0xFF181825),
+              color: _kBgSecondary,
               borderRadius: BorderRadius.circular(32),
-              border: Border.all(color: Colors.white10),
+              border: Border.all(color: _kBorder),
             ),
             child: const Text(
               'Chatbot + Especialistas = Proteção de Ponta a Ponta',
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
           ),
@@ -430,7 +407,7 @@ class ComoFuncionaScreen extends StatelessWidget {
           const Text(
             'O chatbot não substitui o humano, ele o escala. Em casos de abuso, a vítima muitas vezes sente vergonha ou medo de ser julgada. O sistema oferece um espaço de desabafo imediato, 24/7, que prepara a vítima emocionalmente para o contato com a psicóloga humana, filtrando urgências e salvando vidas.',
             textAlign: TextAlign.center,
-            style: TextStyle(color: Colors.white70, fontSize: 18, height: 1.5),
+            style: TextStyle(color: _kTextMuted, fontSize: 18, height: 1.5),
           ),
         ],
       ),
@@ -444,7 +421,7 @@ class ComoFuncionaScreen extends StatelessWidget {
         padding: EdgeInsets.all(isMobile ? 32 : 64),
         child: Column(
           children: [
-            const Icon(LucideIcons.helpCircle, size: 64, color: Colors.white24),
+            const Icon(LucideIcons.helpCircle, size: 64, color: _kBorder),
             const SizedBox(height: 24),
             Text(
               'Ainda tem dúvidas?',
@@ -458,7 +435,7 @@ class ComoFuncionaScreen extends StatelessWidget {
             const Text(
               'Nossa central de ajuda e perguntas frequentes está sempre atualizada com as diretrizes das principais ONGs de proteção.',
               textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.white70, fontSize: 18),
+              style: TextStyle(color: _kTextMuted, fontSize: 18),
             ),
             const SizedBox(height: 32),
             Wrap(
@@ -470,25 +447,19 @@ class ComoFuncionaScreen extends StatelessWidget {
                   onPressed: () => context.go('/sobre'),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: Colors.white,
-                    side: const BorderSide(color: Colors.white24),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 32,
-                      vertical: 20,
-                    ),
+                    side: const BorderSide(color: _kBorder),
+                    padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 20),
                   ),
-                  child: const Text('Conhecer a Equipe'),
+                  child: const Text('Ver Perguntas Frequentes'),
                 ),
                 ElevatedButton.icon(
                   onPressed: () => context.go('/'),
                   icon: const Icon(LucideIcons.arrowRight),
                   label: const Text('Voltar ao Início'),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blueAccent,
+                    backgroundColor: _kBrandPrimary,
                     foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 32,
-                      vertical: 20,
-                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 20),
                   ),
                 ),
               ],
@@ -506,13 +477,13 @@ class ComoFuncionaScreen extends StatelessWidget {
         padding: EdgeInsets.all(isMobile ? 32 : 64),
         decoration: BoxDecoration(
           gradient: const LinearGradient(
-            colors: [Colors.blueAccent, Colors.purpleAccent],
+            colors: [Color(0xFF8B7EFA), Color(0xFF6B5CE7)],
           ),
-          borderRadius: BorderRadius.circular(48),
+          borderRadius: BorderRadius.circular(32),
         ),
         child: Column(
           children: [
-            const Icon(LucideIcons.bellRing, size: 64, color: Colors.white),
+            const Icon(LucideIcons.bellRing, size: 56, color: Colors.white),
             const SizedBox(height: 24),
             Text(
               'Não espere o pior acontecer.',
@@ -537,11 +508,8 @@ class ComoFuncionaScreen extends StatelessWidget {
               label: const Text('INICIAR TRIAGEM AGORA'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.white,
-                foregroundColor: Colors.blueAccent,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 40,
-                  vertical: 24,
-                ),
+                foregroundColor: _kBrandPrimary,
+                padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 24),
                 textStyle: const TextStyle(
                   fontWeight: FontWeight.w900,
                   letterSpacing: 1.5,

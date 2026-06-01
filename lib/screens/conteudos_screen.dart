@@ -8,6 +8,13 @@ import '../widgets/nira_glass_card.dart';
 import '../services/nira_supabase_service.dart';
 import '../models/nira_models.dart';
 
+// ── Paleta de marca ────────────────────────────────────────────────────────
+const _kBrandPrimary = Color(0xFF8B7EFA);
+const _kBgMain = Color(0xFF11111B);
+const _kBgSecondary = Color(0xFF1E1E2E);
+const _kBorder = Color(0xFF2B2B3C);
+const _kTextMuted = Color(0xFFA6A6B0);
+
 // ---------------------------------------------------------
 // Providers Locais (Gerência de Estado do Blog/Conteúdos)
 // ---------------------------------------------------------
@@ -34,7 +41,7 @@ class ConteudosScreen extends ConsumerWidget {
     final artigoAtivo = ref.watch(artigoAtivoProvider);
 
     return Scaffold(
-      backgroundColor: const Color(0xFF07070B),
+      backgroundColor: _kBgMain,
       body: Stack(
         children: [
           SingleChildScrollView(
@@ -82,9 +89,7 @@ class ConteudosScreen extends ConsumerWidget {
                   loading: () => const Padding(
                     padding: EdgeInsets.all(100.0),
                     child: Center(
-                      child: CircularProgressIndicator(
-                        color: Colors.blueAccent,
-                      ),
+                      child: CircularProgressIndicator(color: _kBrandPrimary),
                     ),
                   ),
                   error: (err, stack) => Padding(
@@ -130,10 +135,7 @@ class ConteudosScreen extends ConsumerWidget {
         gradient: RadialGradient(
           center: const Alignment(0, -1.2),
           radius: 1.5,
-          colors: [
-            Colors.purpleAccent.withValues(alpha: 0.15),
-            Colors.transparent,
-          ],
+          colors: [_kBrandPrimary.withValues(alpha: 0.15), Colors.transparent],
         ),
       ),
       child: Column(
@@ -157,9 +159,9 @@ class ConteudosScreen extends ConsumerWidget {
                         vertical: 6,
                       ),
                       decoration: BoxDecoration(
-                        color: Colors.blueAccent.withValues(alpha: 0.1),
+                        color: _kBrandPrimary.withValues(alpha: 0.1),
                         border: Border.all(
-                          color: Colors.blueAccent.withValues(alpha: 0.2),
+                          color: _kBrandPrimary.withValues(alpha: 0.2),
                         ),
                         borderRadius: BorderRadius.circular(100),
                       ),
@@ -169,13 +171,13 @@ class ConteudosScreen extends ConsumerWidget {
                           Icon(
                             LucideIcons.shield,
                             size: 12,
-                            color: Colors.blueAccent,
+                            color: _kBrandPrimary,
                           ),
                           SizedBox(width: 8),
                           Text(
                             'CONEXÃO SEGURA ATIVA',
                             style: TextStyle(
-                              color: Colors.blueAccent,
+                              color: _kBrandPrimary,
                               fontSize: 10,
                               fontWeight: FontWeight.w900,
                               letterSpacing: 2,
@@ -234,7 +236,7 @@ class ConteudosScreen extends ConsumerWidget {
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(16),
                       borderSide: BorderSide(
-                        color: Colors.blueAccent.withValues(alpha: 0.5),
+                        color: _kBrandPrimary.withValues(alpha: 0.5),
                       ),
                     ),
                   ),
@@ -259,13 +261,13 @@ class ConteudosScreen extends ConsumerWidget {
                   ),
                   decoration: BoxDecoration(
                     color: ativo
-                        ? Colors.blueAccent
+                        ? _kBrandPrimary
                         : Colors.white.withValues(alpha: 0.05),
                     borderRadius: BorderRadius.circular(100),
                     boxShadow: ativo
                         ? [
                             BoxShadow(
-                              color: Colors.blueAccent.withValues(alpha: 0.3),
+                              color: _kBrandPrimary.withValues(alpha: 0.3),
                               blurRadius: 12,
                             ),
                           ]
@@ -345,7 +347,7 @@ class ConteudosScreen extends ConsumerWidget {
                         vertical: 8,
                       ),
                       decoration: BoxDecoration(
-                        color: Colors.blueAccent,
+                        color: _kBrandPrimary,
                         borderRadius: BorderRadius.circular(100),
                       ),
                       child: const Text(
@@ -443,7 +445,7 @@ class ConteudosScreen extends ConsumerWidget {
             const Center(
               child: Column(
                 children: [
-                  Icon(LucideIcons.search, size: 64, color: Colors.blueAccent),
+                  Icon(LucideIcons.search, size: 64, color: _kBrandPrimary),
                   SizedBox(height: 16),
                   Text(
                     'NENHUM RESULTADO ENCONTRADO',
@@ -526,13 +528,13 @@ class ConteudosScreen extends ConsumerWidget {
                           color: const Color(0xFF07070B).withValues(alpha: 0.8),
                           borderRadius: BorderRadius.circular(100),
                           border: Border.all(
-                            color: Colors.blueAccent.withValues(alpha: 0.2),
+                            color: _kBrandPrimary.withValues(alpha: 0.2),
                           ),
                         ),
                         child: Text(
                           art.category?.toUpperCase() ?? 'GERAL',
                           style: const TextStyle(
-                            color: Colors.blueAccent,
+                            color: _kBrandPrimary,
                             fontSize: 9,
                             fontWeight: FontWeight.w900,
                             letterSpacing: 1.5,
@@ -580,14 +582,14 @@ class ConteudosScreen extends ConsumerWidget {
                               width: 32,
                               height: 32,
                               decoration: BoxDecoration(
-                                color: Colors.blueAccent.withValues(alpha: 0.1),
+                                color: _kBrandPrimary.withValues(alpha: 0.1),
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: const Center(
                                 child: Text(
                                   'N',
                                   style: TextStyle(
-                                    color: Colors.blueAccent,
+                                    color: _kBrandPrimary,
                                     fontWeight: FontWeight.w900,
                                     fontSize: 10,
                                   ),
@@ -710,7 +712,7 @@ class ConteudosScreen extends ConsumerWidget {
                                     vertical: 6,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: Colors.blueAccent,
+                                    color: _kBrandPrimary,
                                     borderRadius: BorderRadius.circular(100),
                                   ),
                                   child: Text(
@@ -752,7 +754,7 @@ class ConteudosScreen extends ConsumerWidget {
                                       Icon(
                                         LucideIcons.heart,
                                         size: 14,
-                                        color: Colors.blueAccent,
+                                        color: _kBrandPrimary,
                                       ),
                                       SizedBox(width: 8),
                                       Text(
@@ -801,10 +803,10 @@ class ConteudosScreen extends ConsumerWidget {
                                   top: 8,
                                   bottom: 8,
                                 ),
-                                decoration: const BoxDecoration(
+                                decoration: BoxDecoration(
                                   border: Border(
                                     left: BorderSide(
-                                      color: Colors.blueAccent,
+                                      color: _kBrandPrimary,
                                       width: 4,
                                     ),
                                   ),
@@ -851,11 +853,9 @@ class ConteudosScreen extends ConsumerWidget {
                               Container(
                                 padding: const EdgeInsets.all(40),
                                 decoration: BoxDecoration(
-                                  color: Colors.blueAccent.withValues(
-                                    alpha: 0.05,
-                                  ),
+                                  color: _kBrandPrimary.withValues(alpha: 0.05),
                                   border: Border.all(
-                                    color: Colors.blueAccent.withValues(
+                                    color: _kBrandPrimary.withValues(
                                       alpha: 0.2,
                                     ),
                                   ),
@@ -869,7 +869,7 @@ class ConteudosScreen extends ConsumerWidget {
                                         Icon(
                                           LucideIcons.shield,
                                           size: 16,
-                                          color: Colors.blueAccent,
+                                          color: _kBrandPrimary,
                                         ),
                                         SizedBox(width: 12),
                                         Text(
@@ -929,7 +929,7 @@ class ConteudosScreen extends ConsumerWidget {
                                         'SOLICITAR APOIO AGORA',
                                       ),
                                       style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors.blueAccent,
+                                        backgroundColor: _kBrandPrimary,
                                         foregroundColor: Colors.white,
                                         padding: const EdgeInsets.symmetric(
                                           vertical: 24,
@@ -1010,7 +1010,7 @@ class ConteudosScreen extends ConsumerWidget {
           width: 24,
           height: 24,
           decoration: const BoxDecoration(
-            color: Colors.blueAccent,
+            color: _kBrandPrimary,
             shape: BoxShape.circle,
           ),
           child: Center(

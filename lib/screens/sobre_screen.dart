@@ -3,17 +3,23 @@ import 'package:lucide_icons/lucide_icons.dart';
 import 'package:go_router/go_router.dart';
 import '../widgets/nira_glass_card.dart';
 
+// ── Paleta de marca ────────────────────────────────────────────────────────
+const _kBrandPrimary = Color(0xFF8B7EFA);
+const _kBgMain       = Color(0xFF11111B);
+const _kBgSecondary  = Color(0xFF1E1E2E);
+const _kBorder       = Color(0xFF2B2B3C);
+const _kTextMuted    = Color(0xFFA6A6B0);
+
 class SobreScreen extends StatelessWidget {
   const SobreScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // Validação de responsividade nativa para evitar quebras em web/mobile
     final screenWidth = MediaQuery.sizeOf(context).width;
     final isMobile = screenWidth < 800;
 
     return Scaffold(
-      backgroundColor: const Color(0xFF07070B),
+      backgroundColor: _kBgMain,
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -22,6 +28,7 @@ class SobreScreen extends StatelessWidget {
             _buildManifesto(context, isMobile),
             _buildProblema(context, isMobile),
             _buildEquipe(context, isMobile),
+            _buildFaq(context, isMobile),   // ← FAQ movido da HomeScreen
             _buildCta(context, isMobile),
           ],
         ),
@@ -29,6 +36,7 @@ class SobreScreen extends StatelessWidget {
     );
   }
 
+  // ── HERO ───────────────────────────────────────────────────────────────────
   Widget _buildHero(BuildContext context, bool isMobile) {
     return Container(
       padding: EdgeInsets.symmetric(
@@ -40,16 +48,14 @@ class SobreScreen extends StatelessWidget {
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            Colors.purpleAccent.withValues(alpha: 0.05),
+            _kBrandPrimary.withValues(alpha: 0.05),
             Colors.transparent,
           ],
         ),
       ),
       child: Flex(
         direction: isMobile ? Axis.vertical : Axis.horizontal,
-        crossAxisAlignment: isMobile
-            ? CrossAxisAlignment.center
-            : CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Expanded(
             flex: isMobile ? 0 : 1,
@@ -59,20 +65,15 @@ class SobreScreen extends StatelessWidget {
                   : CrossAxisAlignment.start,
               children: [
                 Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 8,
-                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Colors.blueAccent.withValues(alpha: 0.3),
-                    ),
+                    border: Border.all(color: _kBrandPrimary.withValues(alpha: 0.3)),
                     borderRadius: BorderRadius.circular(100),
                   ),
                   child: const Text(
                     'E.Y.E — Ethical Youth Engineers · SESI-SENAI 2026',
                     style: TextStyle(
-                      color: Colors.white70,
+                      color: _kTextMuted,
                       fontSize: 10,
                       letterSpacing: 1.5,
                     ),
@@ -92,9 +93,9 @@ class SobreScreen extends StatelessWidget {
                 const SizedBox(height: 24),
                 Text(
                   'Somos cinco estudantes que transformaram indignação em código. A NIRA nasceu da crença de que tecnologia pode ser o primeiro passo para pedir socorro — anônimo, silencioso e imediato.',
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 16,
-                    color: Colors.white70,
+                    color: _kTextMuted,
                     height: 1.6,
                   ),
                   textAlign: isMobile ? TextAlign.center : TextAlign.left,
@@ -103,9 +104,7 @@ class SobreScreen extends StatelessWidget {
                 Wrap(
                   spacing: 32,
                   runSpacing: 24,
-                  alignment: isMobile
-                      ? WrapAlignment.center
-                      : WrapAlignment.start,
+                  alignment: isMobile ? WrapAlignment.center : WrapAlignment.start,
                   children: [
                     _buildMetric('5', 'Devs no time'),
                     _buildMetric('9', 'Páginas'),
@@ -118,7 +117,7 @@ class SobreScreen extends StatelessWidget {
           ),
           if (!isMobile) const SizedBox(width: 80),
           if (isMobile) const SizedBox(height: 64),
-          Expanded(flex: isMobile ? 0 : 1, child: _buildChatPreview(isMobile)),
+          Expanded(flex: isMobile ? 0 : 1, child: _buildChatPreview()),
         ],
       ),
     );
@@ -140,7 +139,7 @@ class SobreScreen extends StatelessWidget {
           label,
           style: const TextStyle(
             fontSize: 10,
-            color: Colors.white54,
+            color: _kTextMuted,
             letterSpacing: 1,
             fontWeight: FontWeight.bold,
           ),
@@ -149,20 +148,20 @@ class SobreScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildChatPreview(bool isMobile) {
+  Widget _buildChatPreview() {
     return NiraGlassCard(
       padding: EdgeInsets.zero,
       child: Column(
         children: [
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.05),
-              border: const Border(bottom: BorderSide(color: Colors.white10)),
+            decoration: const BoxDecoration(
+              color: Color(0x0CFFFFFF),
+              border: Border(bottom: BorderSide(color: _kBorder)),
             ),
             child: const Row(
               children: [
-                CircleAvatar(radius: 5, backgroundColor: Colors.redAccent),
+                CircleAvatar(radius: 5, backgroundColor: Color(0xFFE53E3E)),
                 SizedBox(width: 8),
                 CircleAvatar(radius: 5, backgroundColor: Colors.amber),
                 SizedBox(width: 8),
@@ -170,7 +169,7 @@ class SobreScreen extends StatelessWidget {
                 SizedBox(width: 16),
                 Text(
                   'Painel Nira — Chat de Triagem',
-                  style: TextStyle(color: Colors.white38, fontSize: 12),
+                  style: TextStyle(color: Color(0x61FFFFFF), fontSize: 12),
                 ),
               ],
             ),
@@ -207,10 +206,10 @@ class SobreScreen extends StatelessWidget {
       mainAxisAlignment: isIa ? MainAxisAlignment.start : MainAxisAlignment.end,
       children: [
         if (isIa) ...[
-          const CircleAvatar(
+          CircleAvatar(
             radius: 14,
-            backgroundColor: Colors.blueAccent,
-            child: Icon(LucideIcons.shield, size: 14, color: Colors.white),
+            backgroundColor: _kBrandPrimary,
+            child: const Icon(LucideIcons.shield, size: 14, color: Colors.white),
           ),
           const SizedBox(width: 12),
         ],
@@ -229,7 +228,7 @@ class SobreScreen extends StatelessWidget {
               ),
               border: Border.all(
                 color: isIa
-                    ? Colors.blueAccent.withValues(alpha: 0.3)
+                    ? _kBrandPrimary.withValues(alpha: 0.3)
                     : Colors.white24,
               ),
             ),
@@ -245,16 +244,17 @@ class SobreScreen extends StatelessWidget {
         ),
         if (!isIa) ...[
           const SizedBox(width: 12),
-          const CircleAvatar(
+          CircleAvatar(
             radius: 14,
-            backgroundColor: Colors.purpleAccent,
-            child: Icon(LucideIcons.user, size: 14, color: Colors.white),
+            backgroundColor: _kBrandPrimary.withValues(alpha: 0.5),
+            child: const Icon(LucideIcons.user, size: 14, color: Colors.white),
           ),
         ],
       ],
     );
   }
 
+  // ── MANIFESTO ──────────────────────────────────────────────────────────────
   Widget _buildManifesto(BuildContext context, bool isMobile) {
     final valores = [
       {
@@ -279,7 +279,7 @@ class SobreScreen extends StatelessWidget {
 
     return Container(
       padding: EdgeInsets.all(isMobile ? 24 : 64),
-      color: const Color(0xFF11111A),
+      color: _kBgSecondary,
       child: Flex(
         direction: isMobile ? Axis.vertical : Axis.horizontal,
         children: [
@@ -291,7 +291,7 @@ class SobreScreen extends StatelessWidget {
                 const Text(
                   'Nosso Manifesto',
                   style: TextStyle(
-                    color: Colors.blueAccent,
+                    color: _kBrandPrimary,
                     fontWeight: FontWeight.bold,
                     letterSpacing: 1.5,
                   ),
@@ -309,7 +309,7 @@ class SobreScreen extends StatelessWidget {
                 const SizedBox(height: 24),
                 const Text(
                   '— Equipe E.Y.E, SESI-SENAI 2026',
-                  style: TextStyle(color: Colors.white54),
+                  style: TextStyle(color: _kTextMuted),
                 ),
               ],
             ),
@@ -328,9 +328,17 @@ class SobreScreen extends StatelessWidget {
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Icon(
-                              v['icon'] as IconData,
-                              color: Colors.blueAccent,
+                            Container(
+                              padding: const EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                color: _kBrandPrimary.withValues(alpha: 0.12),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Icon(
+                                v['icon'] as IconData,
+                                color: _kBrandPrimary,
+                                size: 18,
+                              ),
                             ),
                             const SizedBox(width: 16),
                             Expanded(
@@ -349,7 +357,7 @@ class SobreScreen extends StatelessWidget {
                                   Text(
                                     v['texto'] as String,
                                     style: const TextStyle(
-                                      color: Colors.white70,
+                                      color: _kTextMuted,
                                       fontSize: 14,
                                     ),
                                   ),
@@ -369,35 +377,32 @@ class SobreScreen extends StatelessWidget {
     );
   }
 
+  // ── O PROBLEMA ─────────────────────────────────────────────────────────────
   Widget _buildProblema(BuildContext context, bool isMobile) {
     final stats = [
       {
         'num': '1 em 4',
-        'label':
-            'casos de violência doméstica é formalmente denunciado no Brasil',
+        'label': 'casos de violência doméstica é formalmente denunciado no Brasil',
         'src': 'FBSP 2023',
-        'color': Colors.redAccent,
+        'color': const Color(0xFFE53E3E),
       },
       {
         'num': '4 min',
-        'label':
-            'é o intervalo médio entre casos de violência doméstica registrados',
+        'label': 'é o intervalo médio entre casos de violência doméstica registrados',
         'src': 'FBSP 2023',
         'color': Colors.amber,
       },
       {
         'num': '70%',
-        'label':
-            'das vítimas de feminicídio nunca haviam feito um registro policial',
+        'label': 'das vítimas de feminicídio nunca haviam feito um registro policial',
         'src': 'IPEA 2023',
-        'color': Colors.purpleAccent,
+        'color': _kBrandPrimary,
       },
       {
         'num': '16M',
-        'label':
-            'de mulheres no Brasil já sofreram violência doméstica, segundo IBGE',
+        'label': 'de mulheres no Brasil já sofreram violência doméstica, segundo IBGE',
         'src': 'IBGE 2024',
-        'color': Colors.greenAccent,
+        'color': const Color(0xFF48BB78),
       },
     ];
 
@@ -408,7 +413,7 @@ class SobreScreen extends StatelessWidget {
           const Text(
             'O Problema',
             style: TextStyle(
-              color: Colors.blueAccent,
+              color: _kBrandPrimary,
               fontWeight: FontWeight.bold,
               letterSpacing: 1.5,
             ),
@@ -425,7 +430,7 @@ class SobreScreen extends StatelessWidget {
           const SizedBox(height: 16),
           const Text(
             'A realidade que motivou cada linha de código da NIRA.',
-            style: TextStyle(color: Colors.white70, fontSize: 16),
+            style: TextStyle(color: _kTextMuted, fontSize: 16),
           ),
           const SizedBox(height: 48),
           Wrap(
@@ -453,7 +458,7 @@ class SobreScreen extends StatelessWidget {
                           Text(
                             s['label'] as String,
                             style: const TextStyle(
-                              color: Colors.white70,
+                              color: _kTextMuted,
                               fontSize: 14,
                               height: 1.5,
                             ),
@@ -462,7 +467,7 @@ class SobreScreen extends StatelessWidget {
                           Text(
                             'Fonte: ${s['src']}',
                             style: const TextStyle(
-                              color: Colors.white38,
+                              color: Color(0x61FFFFFF),
                               fontSize: 10,
                               letterSpacing: 1,
                             ),
@@ -479,36 +484,25 @@ class SobreScreen extends StatelessWidget {
     );
   }
 
+  // ── EQUIPE ─────────────────────────────────────────────────────────────────
   Widget _buildEquipe(BuildContext context, bool isMobile) {
     final equipe = [
-      {
-        'nome': 'Giovanna',
-        'papel': 'UX / Design',
-        'icon': LucideIcons.paintbrush,
-      },
-      {'nome': 'Samuel', 'papel': 'Backend / PHP', 'icon': LucideIcons.code2},
-      {
-        'nome': 'Kauã',
-        'papel': 'Frontend / React',
-        'icon': LucideIcons.monitorPlay,
-      },
-      {'nome': 'Pietro', 'papel': 'Full Stack', 'icon': LucideIcons.wrench},
-      {
-        'nome': 'Lucas',
-        'papel': 'QA / Docs',
-        'icon': LucideIcons.clipboardCheck,
-      },
+      {'nome': 'Giovanna', 'papel': 'UX / Design',        'icon': LucideIcons.paintbrush},
+      {'nome': 'Samuel',   'papel': 'Backend / PHP',      'icon': LucideIcons.code2},
+      {'nome': 'Kauã',     'papel': 'Frontend / React',   'icon': LucideIcons.monitorPlay},
+      {'nome': 'Pietro',   'papel': 'Full Stack',         'icon': LucideIcons.wrench},
+      {'nome': 'Lucas',    'papel': 'QA / Docs',          'icon': LucideIcons.clipboardCheck},
     ];
 
     return Container(
       padding: EdgeInsets.all(isMobile ? 24 : 64),
-      color: const Color(0xFF11111A),
+      color: _kBgSecondary,
       child: Column(
         children: [
           const Text(
             'Time',
             style: TextStyle(
-              color: Colors.blueAccent,
+              color: _kBrandPrimary,
               fontWeight: FontWeight.bold,
               letterSpacing: 1.5,
             ),
@@ -526,7 +520,7 @@ class SobreScreen extends StatelessWidget {
           const Text(
             'Cinco estudantes do SESI-SENAI que decidiram que tecnologia pode ser uma ferramenta de proteção.',
             textAlign: TextAlign.center,
-            style: TextStyle(color: Colors.white70, fontSize: 16),
+            style: TextStyle(color: _kTextMuted, fontSize: 16),
           ),
           const SizedBox(height: 48),
           Wrap(
@@ -543,10 +537,17 @@ class SobreScreen extends StatelessWidget {
                       padding: const EdgeInsets.all(24),
                       child: Column(
                         children: [
-                          Icon(
-                            e['icon'] as IconData,
-                            size: 40,
-                            color: Colors.blueAccent,
+                          Container(
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: _kBrandPrimary.withValues(alpha: 0.12),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Icon(
+                              e['icon'] as IconData,
+                              size: 28,
+                              color: _kBrandPrimary,
+                            ),
                           ),
                           const SizedBox(height: 16),
                           Text(
@@ -561,7 +562,7 @@ class SobreScreen extends StatelessWidget {
                           Text(
                             e['papel'] as String,
                             style: const TextStyle(
-                              color: Colors.blueAccent,
+                              color: _kBrandPrimary,
                               fontSize: 10,
                               fontWeight: FontWeight.bold,
                               letterSpacing: 1,
@@ -570,10 +571,7 @@ class SobreScreen extends StatelessWidget {
                           const SizedBox(height: 16),
                           const Text(
                             'SESI-SENAI · 2026',
-                            style: TextStyle(
-                              color: Colors.white38,
-                              fontSize: 10,
-                            ),
+                            style: TextStyle(color: Color(0x61FFFFFF), fontSize: 10),
                           ),
                         ],
                       ),
@@ -587,26 +585,120 @@ class SobreScreen extends StatelessWidget {
     );
   }
 
+  // ── FAQ (movido da HomeScreen) ─────────────────────────────────────────────
+  Widget _buildFaq(BuildContext context, bool isMobile) {
+    final faq = [
+      {
+        'q': 'A Nira é realmente anônima? Meus dados ficam salvos?',
+        'a': 'Sim. A Nira foi desenhada com anonimato desde o início. Nenhum dado pessoal como nome, CPF ou telefone é solicitado.',
+      },
+      {
+        'q': 'E se o meu agressor pegar meu celular e ver o app?',
+        'a': 'A Nira possui um botão de saída rápida que fecha o aplicativo instantaneamente. Recomendamos ativar o modo furtivo.',
+      },
+      {
+        'q': 'Como funciona o botão S.O.S.?',
+        'a': 'Com um único toque, o S.O.S. envia sua localização em tempo real para a equipe Nira. Não é necessário digitar nada.',
+      },
+      {
+        'q': 'Preciso criar uma conta para usar?',
+        'a': 'Não. A Nira não exige cadastro. Você acessa o chat e o S.O.S. diretamente, sem criar perfil ou fornecer e-mail.',
+      },
+    ];
+
+    return Container(
+      padding: EdgeInsets.all(isMobile ? 24 : 64),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const Text(
+            'Dúvidas Frequentes',
+            style: TextStyle(
+              color: _kBrandPrimary,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 1.5,
+            ),
+          ),
+          const SizedBox(height: 12),
+          Text(
+            'Perguntas comuns',
+            style: TextStyle(
+              fontSize: isMobile ? 28 : 40,
+              fontWeight: FontWeight.w900,
+              color: Colors.white,
+            ),
+          ),
+          const SizedBox(height: 32),
+          ListView.separated(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: faq.length,
+            separatorBuilder: (_, __) => const SizedBox(height: 12),
+            itemBuilder: (context, index) {
+              final item = faq[index];
+              return NiraGlassCard(
+                padding: EdgeInsets.zero,
+                child: Theme(
+                  data: Theme.of(context).copyWith(
+                    dividerColor: Colors.transparent,
+                  ),
+                  child: ExpansionTile(
+                    iconColor: _kBrandPrimary,
+                    collapsedIconColor: _kTextMuted,
+                    title: Text(
+                      item['q']!,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                      ),
+                    ),
+                    children: [
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                        child: Text(
+                          item['a']!,
+                          style: const TextStyle(
+                            color: _kTextMuted,
+                            height: 1.6,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ── CTA FINAL ──────────────────────────────────────────────────────────────
   Widget _buildCta(BuildContext context, bool isMobile) {
     return Container(
       padding: EdgeInsets.all(isMobile ? 24 : 64),
       child: NiraGlassCard(
         padding: EdgeInsets.all(isMobile ? 32 : 64),
+        glowPrimary: true,
         child: Column(
           children: [
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               decoration: BoxDecoration(
-                color: Colors.greenAccent.withValues(alpha: 0.1),
+                color: const Color(0xFF48BB78).withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(100),
                 border: Border.all(
-                  color: Colors.greenAccent.withValues(alpha: 0.2),
+                  color: const Color(0xFF48BB78).withValues(alpha: 0.2),
                 ),
               ),
               child: const Text(
                 'PRONTO PARA COMEÇAR?',
                 style: TextStyle(
-                  color: Colors.greenAccent,
+                  color: Color(0xFF48BB78),
                   fontSize: 10,
                   fontWeight: FontWeight.bold,
                   letterSpacing: 2,
@@ -632,7 +724,7 @@ class SobreScreen extends StatelessWidget {
                   onPressed: () => context.go('/conteudos'),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: Colors.white,
-                    side: const BorderSide(color: Colors.white24),
+                    side: const BorderSide(color: _kBorder),
                     padding: const EdgeInsets.symmetric(
                       horizontal: 32,
                       vertical: 20,
@@ -645,7 +737,7 @@ class SobreScreen extends StatelessWidget {
                   icon: const Icon(LucideIcons.lock),
                   label: const Text('INICIAR TRIAGEM AGORA'),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blueAccent,
+                    backgroundColor: _kBrandPrimary,
                     foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(
                       horizontal: 32,

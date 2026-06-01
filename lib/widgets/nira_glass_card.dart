@@ -1,51 +1,55 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 
+// Paleta de cores da marca (alinhada com o site React)
+const _kBgSecondary  = Color(0xFF1E1E2E);
+const _kBorder       = Color(0xFF2B2B3C);
+const _kBrandPrimary = Color(0xFF8B7EFA);
+
 class NiraGlassCard extends StatelessWidget {
   final Widget child;
   final EdgeInsetsGeometry? padding;
   final double borderRadius;
-  final double blurOpacity;
   final double blurIntensity;
+  final bool glowPrimary;
 
   const NiraGlassCard({
     super.key,
     required this.child,
     this.padding,
     this.borderRadius = 16.0,
-    this.blurOpacity = 0.1,
     this.blurIntensity = 10.0,
+    this.glowPrimary = false,
   });
 
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-      // O ClipRRect é crucial aqui para evitar vazamento de blur no Flutter Web (HTML/CanvasKit)
+      // ClipRRect é crucial para evitar vazamento de blur no Flutter Web (HTML/CanvasKit)
       borderRadius: BorderRadius.circular(borderRadius),
       child: BackdropFilter(
-        // Aplica o desfoque de fundo
-        filter: ImageFilter.blur(
-          sigmaX: blurIntensity,
-          sigmaY: blurIntensity,
-        ),
+        filter: ImageFilter.blur(sigmaX: blurIntensity, sigmaY: blurIntensity),
         child: Container(
           padding: padding,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(borderRadius),
-            // Gradiente linear sutil semi-transparente usando tons muito escuros
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                const Color(0xFF333333).withValues(alpha: blurOpacity + 0.05), // Cinza muito escuro
-                const Color(0xFF000000).withValues(alpha: blurOpacity),        // Preto puro
-              ],
-            ),
-            // Contorno fino para simular a borda física do vidro (efeito cristal)
+            // Fundo levemente escuro-azulado, alinhado com #1E1E2E do site
+            color: _kBgSecondary.withValues(alpha: 0.65),
+            // Borda sutil #2B2B3C (igual ao CSS do site React)
             border: Border.all(
-              color: Colors.white.withValues(alpha: 0.12),
+              color: glowPrimary
+                  ? _kBrandPrimary.withValues(alpha: 0.28)
+                  : _kBorder,
               width: 1.0,
             ),
+            boxShadow: glowPrimary
+                ? [
+                    BoxShadow(
+                      color: _kBrandPrimary.withValues(alpha: 0.1),
+                      blurRadius: 24,
+                    ),
+                  ]
+                : null,
           ),
           child: child,
         ),

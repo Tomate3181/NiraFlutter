@@ -1,125 +1,301 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons/lucide_icons.dart';
-import 'package:flutter_map/flutter_map.dart';
-import 'package:latlong2/latlong.dart';
-import 'package:fl_chart/fl_chart.dart';
-
-import '../widgets/nira_glass_card.dart';
-import '../services/nira_supabase_service.dart';
-import '../models/nira_models.dart';
 import 'package:go_router/go_router.dart';
+import '../widgets/nira_glass_card.dart';
 
-// Provider temporário para ouvir a stream de alertas (Dashboard)
-final alertasStreamProvider = StreamProvider.autoDispose<List<Alert>>((ref) {
-  final supabaseService = ref.watch(niraSupabaseProvider);
-  return supabaseService.escutarAlertasSOS();
-});
+// ── Paleta de marca (alinhada com o site React) ────────────────────────────
+const _kBrandPrimary = Color(0xFF8B7EFA);
+const _kBgMain = Color(0xFF11111B);
+const _kBgSecondary = Color(0xFF1E1E2E);
+const _kBorder = Color(0xFF2B2B3C);
+const _kTextMuted = Color(0xFFA6A6B0);
+const _kEmergency = Color(0xFFE53E3E);
 
-class HomeScreen extends ConsumerWidget {
+// ══════════════════════════════════════════════════════════════════════════════
+// HomeScreen
+// ══════════════════════════════════════════════════════════════════════════════
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    // Validação de responsividade robusta para evitar quebras em mobile
-    final screenWidth = MediaQuery.sizeOf(context).width;
-    final isMobile = screenWidth < 800;
+  State<HomeScreen> createState() => _HomeScreenState();
+}
 
+class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
+  // Orb — pulso suave (escala 1.0 ↔ 1.04, 4 s)
+  late final AnimationController _orbCtrl;
+  late final Animation<double> _orbScale;
+
+  // Anel expansivo (igual ao orbRing do CSS do site)
+  late final AnimationController _ringCtrl;
+  late final Animation<double> _ringScale;
+  late final Animation<double> _ringOpacity;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _orbCtrl = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 4),
+    )..repeat(reverse: true);
+
+    _orbScale = Tween<double>(
+      begin: 1.0,
+      end: 1.04,
+    ).animate(CurvedAnimation(parent: _orbCtrl, curve: Curves.easeInOut));
+
+    _ringCtrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 3500),
+    )..repeat();
+
+    _ringScale = Tween<double>(
+      begin: 1.0,
+      end: 1.6,
+    ).animate(CurvedAnimation(parent: _ringCtrl, curve: Curves.easeOut));
+    _ringOpacity = Tween<double>(
+      begin: 0.45,
+      end: 0.0,
+    ).animate(CurvedAnimation(parent: _ringCtrl, curve: Curves.easeOut));
+  }
+
+  @override
+  void dispose() {
+    _orbCtrl.dispose();
+    _ringCtrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF07070B), // Fundo extremamente escuro
+      backgroundColor: _kBgMain,
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            _buildHero(context, isMobile),
-            _buildLiveDashboard(context, ref, isMobile),
-            _buildDores(context, isMobile),
-            _buildParaQuem(context, isMobile),
-            _buildFaq(context, isMobile),
+            _buildHero(context),
+            _buildActionCards(context),
+            _buildDores(context),
+            _buildParaQuem(context),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildHero(BuildContext context, bool isMobile) {
+  // ── HERO ───────────────────────────────────────────────────────────────────
+  Widget _buildHero(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: isMobile ? 24 : 64,
-        vertical: isMobile ? 64 : 120,
-      ),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            Colors.purpleAccent.withValues(alpha: 0.05),
-            Colors.transparent,
-          ],
+      width: double.infinity,
+      padding: const EdgeInsets.fromLTRB(24, 48, 24, 36),
+      decoration: const BoxDecoration(
+        // Gradiente radial roxo sutil no canto superior direito (espelha o site)
+        gradient: RadialGradient(
+          center: Alignment(0.7, -1.0),
+          radius: 1.5,
+          colors: [Color(0x408B7EFA), Colors.transparent],
         ),
       ),
       child: Column(
-        crossAxisAlignment: isMobile
-            ? CrossAxisAlignment.center
-            : CrossAxisAlignment.start,
         children: [
-          Text(
-            'NIRA',
-            style: TextStyle(
-              fontSize: isMobile ? 48 : 80,
-              fontWeight: FontWeight.w900,
-              color: Colors.white,
-              letterSpacing: 8,
+          // Badge "IA disponível 24/7" com ponto pulsante roxo
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+            decoration: BoxDecoration(
+              color: const Color(0x208B7EFA),
+              borderRadius: BorderRadius.circular(100),
+              border: Border.all(color: const Color(0x478B7EFA)),
             ),
-          ),
-          const SizedBox(height: 24),
-          Text(
-            'Tecnologia para ouvir, acolher e proteger quem mais precisa.\nUm canal anônimo, seguro e disponível de qualquer lugar.',
-            textAlign: isMobile ? TextAlign.center : TextAlign.left,
-            style: TextStyle(
-              fontSize: isMobile ? 18 : 24,
-              fontWeight: FontWeight.w300,
-              color: Colors.white70,
-              height: 1.5,
-            ),
-          ),
-          const SizedBox(height: 48),
-          Wrap(
-            spacing: 16,
-            runSpacing: 16,
-            alignment: isMobile ? WrapAlignment.center : WrapAlignment.start,
-            children: [
-              ElevatedButton.icon(
-                onPressed: () => GoRouter.of(
-                  context,
-                ).go('/chat', extra: {'sos': true, 'start': true}),
-                icon: const Icon(LucideIcons.alertTriangle),
-                label: const Text('ACIONAR S.O.S AGORA'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.redAccent,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 32,
-                    vertical: 20,
-                  ),
-                  textStyle: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 1.2,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _PulsingDot(color: _kBrandPrimary),
+                const SizedBox(width: 8),
+                const Text(
+                  'IA DISPONÍVEL 24/7',
+                  style: TextStyle(
+                    color: _kBrandPrimary,
+                    fontSize: 10,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 1.8,
                   ),
                 ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 36),
+
+          // Orb animada com anel expansivo
+          AnimatedBuilder(
+            animation: Listenable.merge([_orbCtrl, _ringCtrl]),
+            builder: (context, _) {
+              return SizedBox(
+                width: 180,
+                height: 180,
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    // Anel expansivo
+                    Transform.scale(
+                      scale: _ringScale.value,
+                      child: Opacity(
+                        opacity: _ringOpacity.value,
+                        child: Container(
+                          width: 140,
+                          height: 140,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: _kBrandPrimary,
+                              width: 1.0,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    // Orb principal
+                    Transform.scale(
+                      scale: _orbScale.value,
+                      child: Container(
+                        width: 130,
+                        height: 130,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          gradient: const RadialGradient(
+                            center: Alignment(-0.3, -0.3),
+                            colors: [
+                              Color(0x668B7EFA),
+                              Color(0x268B7EFA),
+                              Color(0x0511111B),
+                            ],
+                            stops: [0.0, 0.5, 1.0],
+                          ),
+                          border: Border.all(
+                            color: const Color(0x4D8B7EFA),
+                            width: 1.5,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: _kBrandPrimary.withValues(alpha: 0.24),
+                              blurRadius: 60,
+                            ),
+                            BoxShadow(
+                              color: _kBrandPrimary.withValues(alpha: 0.10),
+                              blurRadius: 120,
+                            ),
+                          ],
+                        ),
+                        child: const Center(
+                          child: Text(
+                            'NIRA',
+                            style: TextStyle(
+                              color: _kBrandPrimary,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w900,
+                              letterSpacing: 5,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+          const SizedBox(height: 28),
+
+          // Título e subtítulo
+          const Text(
+            'Tecnologia que acolhe.',
+            style: TextStyle(
+              fontSize: 26,
+              fontWeight: FontWeight.w800,
+              color: Colors.white,
+              letterSpacing: -0.5,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 10),
+          const Text(
+            'Um canal anônimo, seguro e disponível\nde qualquer lugar.',
+            style: TextStyle(fontSize: 14, color: _kTextMuted, height: 1.65),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ── ACTION CARDS ───────────────────────────────────────────────────────────
+  Widget _buildActionCards(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
+      child: Column(
+        children: [
+          // SOS — destaque máximo, full-width
+          _ActionCard(
+            icon: LucideIcons.alertTriangle,
+            title: 'S.O.S. Emergência',
+            subtitle: 'Acionar socorro silencioso agora',
+            color: _kEmergency,
+            isPrimary: true,
+            isPulsing: true,
+            onTap: () => GoRouter.of(
+              context,
+            ).go('/chat', extra: {'sos': true, 'start': true}),
+          ),
+          const SizedBox(height: 10),
+
+          // Chat + Conteúdos
+          Row(
+            children: [
+              Expanded(
+                child: _ActionCard(
+                  icon: LucideIcons.messageSquare,
+                  title: 'Chat NIRA',
+                  subtitle: 'Converse de forma anônima',
+                  color: _kBrandPrimary,
+                  onTap: () =>
+                      GoRouter.of(context).go('/chat', extra: {'start': true}),
+                ),
               ),
-              OutlinedButton.icon(
-                onPressed: () => context.go('/como'),
-                icon: const Icon(LucideIcons.bookOpen),
-                label: const Text('COMO FUNCIONA'),
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: Colors.white,
-                  side: const BorderSide(color: Colors.white24),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 32,
-                    vertical: 20,
-                  ),
-                  textStyle: const TextStyle(fontWeight: FontWeight.bold),
+              const SizedBox(width: 10),
+              Expanded(
+                child: _ActionCard(
+                  icon: LucideIcons.bookOpen,
+                  title: 'Conteúdos',
+                  subtitle: 'Guias e orientações',
+                  color: const Color(0xFF38B2AC),
+                  onTap: () => GoRouter.of(context).go('/conteudos'),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+
+          // Como Funciona + Sobre
+          Row(
+            children: [
+              Expanded(
+                child: _ActionCard(
+                  icon: LucideIcons.helpCircle,
+                  title: 'Como Funciona',
+                  subtitle: 'Entenda a plataforma',
+                  color: const Color(0xFFED8936),
+                  onTap: () => GoRouter.of(context).go('/como'),
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: _ActionCard(
+                  icon: LucideIcons.users,
+                  title: 'Sobre a NIRA',
+                  subtitle: 'Nossa missão e equipe',
+                  color: const Color(0xFF48BB78),
+                  onTap: () => GoRouter.of(context).go('/sobre'),
                 ),
               ),
             ],
@@ -129,217 +305,8 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildLiveDashboard(
-    BuildContext context,
-    WidgetRef ref,
-    bool isMobile,
-  ) {
-    final alertasAsync = ref.watch(alertasStreamProvider);
-
-    return Container(
-      padding: EdgeInsets.all(isMobile ? 24 : 64),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Monitoramento em Tempo Real',
-            style: TextStyle(
-              fontSize: isMobile ? 28 : 40,
-              fontWeight: FontWeight.w900,
-              color: Colors.white,
-            ),
-          ),
-          const SizedBox(height: 8),
-          // const Text(
-          //   'Visualização administrativa integrada ao fluxo de Streams do Supabase.',
-          //   style: TextStyle(color: Colors.white54, fontSize: 16),
-          // ),
-          const SizedBox(height: 32),
-          alertasAsync.when(
-            data: (alertas) => isMobile
-                ? Column(
-                    children: [
-                      _buildMapCard(alertas),
-                      const SizedBox(height: 24),
-                      _buildChartCard(),
-                    ],
-                  )
-                : Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(flex: 3, child: _buildMapCard(alertas)),
-                      const SizedBox(width: 32),
-                      Expanded(flex: 2, child: _buildChartCard()),
-                    ],
-                  ),
-            loading: () => const Center(
-              child: CircularProgressIndicator(color: Colors.blueAccent),
-            ),
-            error: (err, stack) => Text(
-              'Erro ao carregar dados: $err',
-              style: const TextStyle(color: Colors.redAccent),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildMapCard(List<Alert> alertas) {
-    return NiraGlassCard(
-      padding: const EdgeInsets.all(16),
-      child: SizedBox(
-        height: 400,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                const Icon(LucideIcons.map, color: Colors.blueAccent),
-                const SizedBox(width: 8),
-                Text(
-                  'Casos Ativos (${alertas.length})',
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            Expanded(
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: FlutterMap(
-                  options: const MapOptions(
-                    initialCenter: LatLng(-23.5505, -46.6333),
-                    initialZoom: 10.0,
-                  ),
-                  children: [
-                    TileLayer(
-                      urlTemplate:
-                          'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                      userAgentPackageName: 'com.nira.app',
-                    ),
-                    MarkerLayer(
-                      markers: alertas
-                          .map(
-                            (a) => Marker(
-                              point: LatLng(a.latitude ?? 0, a.longitude ?? 0),
-                              width: 40,
-                              height: 40,
-                              child: const Icon(
-                                LucideIcons.alertTriangle,
-                                color: Colors.red,
-                                size: 30,
-                              ),
-                            ),
-                          )
-                          .toList(),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildChartCard() {
-    return NiraGlassCard(
-      padding: const EdgeInsets.all(16),
-      child: SizedBox(
-        height: 400,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Row(
-              children: [
-                Icon(LucideIcons.barChart3, color: Colors.purpleAccent),
-                SizedBox(width: 8),
-                Text(
-                  'Projeção Diária',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 32),
-            Expanded(
-              child: LineChart(
-                LineChartData(
-                  gridData: const FlGridData(show: false),
-                  titlesData: FlTitlesData(
-                    topTitles: const AxisTitles(
-                      sideTitles: SideTitles(showTitles: false),
-                    ),
-                    rightTitles: const AxisTitles(
-                      sideTitles: SideTitles(showTitles: false),
-                    ),
-                    bottomTitles: AxisTitles(
-                      sideTitles: SideTitles(
-                        showTitles: true,
-                        reservedSize: 22,
-                        getTitlesWidget: (value, meta) {
-                          final hours = {
-                            0: '00h',
-                            8: '08h',
-                            16: '16h',
-                            24: '24h',
-                          };
-                          if (hours.containsKey(value.toInt())) {
-                            return Padding(
-                              padding: const EdgeInsets.only(top: 8.0),
-                              child: Text(
-                                hours[value.toInt()]!,
-                                style: const TextStyle(
-                                  color: Colors.white54,
-                                  fontSize: 12,
-                                ),
-                              ),
-                            );
-                          }
-                          return const SizedBox.shrink();
-                        },
-                      ),
-                    ),
-                  ),
-                  borderData: FlBorderData(show: false),
-                  lineBarsData: [
-                    LineChartBarData(
-                      spots: const [
-                        FlSpot(0, 12),
-                        FlSpot(4, 5),
-                        FlSpot(8, 28),
-                        FlSpot(12, 45),
-                        FlSpot(16, 38),
-                        FlSpot(20, 56),
-                        FlSpot(24, 30),
-                      ],
-                      isCurved: true,
-                      color: Colors.purpleAccent,
-                      barWidth: 4,
-                      isStrokeCapRound: true,
-                      belowBarData: BarAreaData(
-                        show: true,
-                        color: Colors.purpleAccent.withValues(alpha: 0.2),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildDores(BuildContext context, bool isMobile) {
+  // ── DORES ──────────────────────────────────────────────────────────────────
+  Widget _buildDores(BuildContext context) {
     final dores = [
       {
         'title': 'O SILÊNCIO',
@@ -368,344 +335,409 @@ class HomeScreen extends ConsumerWidget {
     ];
 
     return Container(
-      padding: EdgeInsets.all(isMobile ? 24 : 64),
-      color: const Color(0xFF11111A),
+      padding: const EdgeInsets.all(24),
+      color: _kBgSecondary,
       child: Column(
         children: [
-          Text(
+          const Text(
             'QUAL A DOR QUE NOS MOVE?',
             style: TextStyle(
-              fontSize: isMobile ? 24 : 40,
+              fontSize: 18,
               fontWeight: FontWeight.w900,
               color: Colors.white,
             ),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 6),
           const Text(
-            'O silêncio é o combustível da violência. Criamos a Nira para ser a voz de quem precisa de proteção imediata e anônima.',
-            style: TextStyle(fontSize: 16, color: Colors.white70),
+            'Criamos a Nira para ser a voz de quem precisa de proteção imediata e anônima.',
+            style: TextStyle(fontSize: 13, color: _kTextMuted, height: 1.5),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 48),
-          Wrap(
-            spacing: 24,
-            runSpacing: 24,
-            alignment: WrapAlignment.center,
-            children: dores.map((d) {
-              return SizedBox(
-                width: isMobile ? double.infinity : 280,
-                child: NiraGlassCard(
-                  padding: const EdgeInsets.all(24),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: Colors.blueAccent.withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Icon(
-                          d['icon'] as IconData,
-                          color: Colors.blueAccent,
-                        ),
+          const SizedBox(height: 20),
+          ...dores.map(
+            (d) => Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: NiraGlassCard(
+                padding: const EdgeInsets.all(16),
+                child: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: _kBrandPrimary.withValues(alpha: 0.12),
+                        borderRadius: BorderRadius.circular(10),
                       ),
-                      const SizedBox(height: 16),
-                      Text(
-                        d['title'] as String,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                          fontSize: 18,
-                        ),
+                      child: Icon(
+                        d['icon'] as IconData,
+                        color: _kBrandPrimary,
+                        size: 18,
                       ),
-                      const SizedBox(height: 8),
-                      Text(
-                        d['desc'] as String,
-                        style: const TextStyle(
-                          color: Colors.white70,
-                          fontSize: 14,
-                        ),
+                    ),
+                    const SizedBox(width: 14),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            d['title'] as String,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                              fontSize: 13,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            d['desc'] as String,
+                            style: const TextStyle(
+                              color: _kTextMuted,
+                              fontSize: 12,
+                              height: 1.45,
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              );
-            }).toList(),
+              ),
+            ),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildParaQuem(BuildContext context, bool isMobile) {
+  // ── PARA QUEM ──────────────────────────────────────────────────────────────
+  Widget _buildParaQuem(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(isMobile ? 24 : 64),
+      padding: const EdgeInsets.all(24),
       child: Column(
         children: [
-          Text(
+          const Text(
             'Para quem é a Nira?',
             style: TextStyle(
-              fontSize: isMobile ? 28 : 40,
+              fontSize: 20,
               fontWeight: FontWeight.w900,
               color: Colors.white,
             ),
           ),
-          const SizedBox(height: 48),
-          if (isMobile)
-            Column(
+          const SizedBox(height: 16),
+          NiraGlassCard(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                NiraGlassCard(
-                  padding: const EdgeInsets.all(32),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Row(
-                        children: [
-                          Icon(
-                            LucideIcons.shield,
-                            color: Colors.greenAccent,
-                            size: 32,
-                          ),
-                          SizedBox(width: 16),
-                          Text(
-                            'USUÁRIOS FINAIS',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 24),
-                      _buildCheckItem(
-                        'Pessoas em situação de violência ou risco.',
-                      ),
-                      _buildCheckItem(
-                        'Indivíduos em vulnerabilidade social e emocional.',
-                      ),
-                      _buildCheckItem(
-                        'Quem precisa de ajuda mas teme se expor.',
-                      ),
-                    ],
-                  ),
+                _CardHeader(
+                  icon: LucideIcons.shield,
+                  label: 'USUÁRIOS FINAIS',
+                  color: const Color(0xFF48BB78),
                 ),
-                const SizedBox(height: 24),
-                NiraGlassCard(
-                  padding: const EdgeInsets.all(32),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Row(
-                        children: [
-                          Icon(
-                            LucideIcons.heartHandshake,
-                            color: Colors.blueAccent,
-                            size: 32,
-                          ),
-                          SizedBox(width: 16),
-                          Text(
-                            'GESTORES E PARCEIROS',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 24),
-                      _buildCheckItem('Psicólogos e assistentes sociais.'),
-                      _buildCheckItem('ONGs e centros de apoio.'),
-                      _buildCheckItem('Autoridades e agentes de segurança.'),
-                    ],
-                  ),
+                const SizedBox(height: 14),
+                _buildCheckItem(
+                  'Pessoas em situação de violência ou risco.',
+                  const Color(0xFF48BB78),
                 ),
-              ],
-            )
-          else
-            Row(
-              children: [
-                Expanded(
-                  child: NiraGlassCard(
-                    padding: const EdgeInsets.all(32),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Row(
-                          children: [
-                            Icon(
-                              LucideIcons.shield,
-                              color: Colors.greenAccent,
-                              size: 32,
-                            ),
-                            SizedBox(width: 16),
-                            Text(
-                              'USUÁRIOS FINAIS',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 24),
-                        _buildCheckItem(
-                          'Pessoas em situação de violência ou risco.',
-                        ),
-                        _buildCheckItem(
-                          'Indivíduos em vulnerabilidade social e emocional.',
-                        ),
-                        _buildCheckItem(
-                          'Quem precisa de ajuda mas teme se expor.',
-                        ),
-                      ],
-                    ),
-                  ),
+                _buildCheckItem(
+                  'Indivíduos em vulnerabilidade social e emocional.',
+                  const Color(0xFF48BB78),
                 ),
-                const SizedBox(width: 24),
-                Expanded(
-                  child: NiraGlassCard(
-                    padding: const EdgeInsets.all(32),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Row(
-                          children: [
-                            Icon(
-                              LucideIcons.heartHandshake,
-                              color: Colors.blueAccent,
-                              size: 32,
-                            ),
-                            SizedBox(width: 16),
-                            Text(
-                              'GESTORES E PARCEIROS',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 24),
-                        _buildCheckItem('Psicólogos e assistentes sociais.'),
-                        _buildCheckItem('ONGs e centros de apoio.'),
-                        _buildCheckItem('Autoridades e agentes de segurança.'),
-                      ],
-                    ),
-                  ),
+                _buildCheckItem(
+                  'Quem precisa de ajuda mas teme se expor.',
+                  const Color(0xFF48BB78),
                 ),
               ],
             ),
+          ),
+          const SizedBox(height: 10),
+          NiraGlassCard(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _CardHeader(
+                  icon: LucideIcons.heartHandshake,
+                  label: 'GESTORES E PARCEIROS',
+                  color: _kBrandPrimary,
+                ),
+                const SizedBox(height: 14),
+                _buildCheckItem(
+                  'Psicólogos e assistentes sociais.',
+                  _kBrandPrimary,
+                ),
+                _buildCheckItem('ONGs e centros de apoio.', _kBrandPrimary),
+                _buildCheckItem(
+                  'Autoridades e agentes de segurança.',
+                  _kBrandPrimary,
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 16),
         ],
       ),
     );
   }
 
-  Widget _buildCheckItem(String text) {
+  Widget _buildCheckItem(String text, Color color) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.only(bottom: 10),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(
-            LucideIcons.checkCircle2,
-            color: Colors.greenAccent,
-            size: 20,
-          ),
-          const SizedBox(width: 12),
+          Icon(LucideIcons.checkCircle2, color: color, size: 15),
+          const SizedBox(width: 10),
           Expanded(
             child: Text(
               text,
-              style: const TextStyle(color: Colors.white70, fontSize: 16),
+              style: const TextStyle(color: _kTextMuted, fontSize: 13),
             ),
           ),
         ],
       ),
     );
   }
+}
 
-  Widget _buildFaq(BuildContext context, bool isMobile) {
-    final faq = [
-      {
-        'q': 'A Nira é realmente anônima? Meus dados ficam salvos?',
-        'a':
-            'Sim. A Nira foi desenhada com anonimato desde o início. Nenhum dado pessoal como nome, CPF ou telefone é solicitado.',
-      },
-      {
-        'q': 'E se o meu agressor pegar meu celular e ver o site?',
-        'a':
-            'A Nira possui um botão de saída rápida que fecha o aplicativo instantaneamente. Recomendamos acessar pelo modo anônimo.',
-      },
-      {
-        'q': 'Como funciona o botão S.O.S.?',
-        'a':
-            'Com um único toque, o S.O.S. envia sua localização em tempo real para a equipe Nira. Não é necessário digitar nada.',
-      },
-    ];
+// ══════════════════════════════════════════════════════════════════════════════
+// _ActionCard — cartão grande e tappável com efeito de pulso no SOS
+// ══════════════════════════════════════════════════════════════════════════════
+class _ActionCard extends StatefulWidget {
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final Color color;
+  final VoidCallback onTap;
+  final bool isPrimary;
+  final bool isPulsing;
 
-    return Container(
-      padding: EdgeInsets.all(isMobile ? 24 : 64),
-      color: const Color(0xFF11111A),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Text(
-            'Dúvidas Comuns',
-            style: TextStyle(
-              fontSize: isMobile ? 28 : 40,
-              fontWeight: FontWeight.w900,
-              color: Colors.white,
+  const _ActionCard({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.color,
+    required this.onTap,
+    this.isPrimary = false,
+    this.isPulsing = false,
+  });
+
+  @override
+  State<_ActionCard> createState() => _ActionCardState();
+}
+
+class _ActionCardState extends State<_ActionCard>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _pulse;
+  late final Animation<double> _pulseAnim;
+
+  @override
+  void initState() {
+    super.initState();
+    _pulse = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1400),
+    );
+    _pulseAnim = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _pulse, curve: Curves.easeOut));
+    if (widget.isPulsing) _pulse.repeat();
+  }
+
+  @override
+  void dispose() {
+    _pulse.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: widget.onTap,
+        borderRadius: BorderRadius.circular(16),
+        splashColor: widget.color.withValues(alpha: 0.18),
+        highlightColor: widget.color.withValues(alpha: 0.08),
+        child: AnimatedBuilder(
+          animation: _pulseAnim,
+          builder: (_, __) => Container(
+            padding: EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: widget.isPrimary ? 18 : 14,
             ),
-          ),
-          const SizedBox(height: 32),
-          ListView.separated(
-            shrinkWrap: true, // Garante que a lista não quebre o layout
-            physics:
-                const NeverScrollableScrollPhysics(), // Evita conflito de rolagem
-            itemCount: faq.length,
-            separatorBuilder: (_, _) => const SizedBox(height: 16),
-            itemBuilder: (context, index) {
-              final item = faq[index];
-              return NiraGlassCard(
-                padding: EdgeInsets.zero,
-                child: Theme(
-                  data: Theme.of(
-                    context,
-                  ).copyWith(dividerColor: Colors.transparent),
-                  child: ExpansionTile(
-                    iconColor: Colors.white,
-                    collapsedIconColor: Colors.white70,
-                    title: Text(
-                      item['q']!,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
+            decoration: BoxDecoration(
+              color: widget.isPrimary
+                  ? widget.color.withValues(alpha: 0.10)
+                  : _kBgSecondary,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color: widget.isPrimary
+                    ? widget.color.withValues(alpha: 0.40)
+                    : _kBorder,
+              ),
+              boxShadow: widget.isPulsing
+                  ? [
+                      BoxShadow(
+                        color: widget.color.withValues(
+                          alpha: 0.28 * (1.0 - _pulseAnim.value),
+                        ),
+                        blurRadius: 16 + (24 * _pulseAnim.value),
+                        spreadRadius: 3 * _pulseAnim.value,
                       ),
-                    ),
+                    ]
+                  : null,
+            ),
+            child: Row(
+              children: [
+                // Ícone com fundo colorido
+                Container(
+                  padding: EdgeInsets.all(widget.isPrimary ? 12 : 10),
+                  decoration: BoxDecoration(
+                    color: widget.color.withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(
+                    widget.icon,
+                    color: widget.color,
+                    size: widget.isPrimary ? 22 : 18,
+                  ),
+                ),
+                const SizedBox(width: 14),
+                // Textos
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Text(
-                          item['a']!,
-                          style: const TextStyle(
-                            color: Colors.white70,
-                            height: 1.5,
-                          ),
+                      Text(
+                        widget.title,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: widget.isPrimary ? 15 : 13,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        widget.subtitle,
+                        style: TextStyle(
+                          color: widget.isPrimary
+                              ? widget.color.withValues(alpha: 0.85)
+                              : _kTextMuted,
+                          fontSize: 11.5,
                         ),
                       ),
                     ],
                   ),
                 ),
-              );
-            },
+                // Seta
+                Icon(
+                  LucideIcons.arrowRight,
+                  color: widget.isPrimary
+                      ? widget.color.withValues(alpha: 0.8)
+                      : _kBorder,
+                  size: 16,
+                ),
+              ],
+            ),
           ),
-        ],
+        ),
       ),
+    );
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// Helpers
+// ══════════════════════════════════════════════════════════════════════════════
+class _PulsingDot extends StatefulWidget {
+  final Color color;
+  const _PulsingDot({required this.color});
+
+  @override
+  State<_PulsingDot> createState() => _PulsingDotState();
+}
+
+class _PulsingDotState extends State<_PulsingDot>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _ctrl;
+  late final Animation<double> _opacity;
+
+  @override
+  void initState() {
+    super.initState();
+    _ctrl = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 2),
+    )..repeat(reverse: true);
+    _opacity = Tween<double>(
+      begin: 0.4,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeInOut));
+  }
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _opacity,
+      builder: (_, __) => Container(
+        width: 6,
+        height: 6,
+        decoration: BoxDecoration(
+          color: widget.color.withValues(alpha: _opacity.value),
+          borderRadius: BorderRadius.circular(3),
+          boxShadow: [
+            BoxShadow(
+              color: widget.color.withValues(alpha: 0.6 * _opacity.value),
+              blurRadius: 6,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _CardHeader extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final Color color;
+
+  const _CardHeader({
+    required this.icon,
+    required this.label,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: color.withValues(alpha: 0.14),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Icon(icon, color: color, size: 18),
+        ),
+        const SizedBox(width: 12),
+        Text(
+          label,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 13,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ],
     );
   }
 }
