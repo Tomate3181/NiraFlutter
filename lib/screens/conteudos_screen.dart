@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/legacy.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:flutter_html/flutter_html.dart';
 import '../widgets/nira_glass_card.dart';
+import '../widgets/nira_app_bar.dart';
 import '../services/nira_supabase_service.dart';
 import '../models/nira_models.dart';
 
@@ -42,6 +43,7 @@ class ConteudosScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: _kBgMain,
+      appBar: const NiraAppBar(title: 'Conteúdos'),
       body: Stack(
         children: [
           SingleChildScrollView(

@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:go_router/go_router.dart';
-// import '../widgets/nira_glass_card.dart'; // Mantenha se for usar depois
+import '../widgets/nira_app_bar.dart';
 
 // ── Paleta de marca (alinhada com o site React) ────────────────────────────
 const _kBrandPrimary = Color(0xFF8B7EFA);
 const _kBgMain = Color(0xFF11111B); // Fundo bem escuro
 const _kBgSecondary = Color(0xFF1E1E2E);
-const _kBorder = Color(0xFF2B2B3C);
 const _kTextMuted = Color(0xFFA6A6B0);
 const _kEmergency = Color(0xFFE53E3E);
 
@@ -28,39 +27,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
     return Scaffold(
       backgroundColor: _kBgMain,
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(56),
-        child: Container(
-          decoration: BoxDecoration(
-            color: _kBgMain,
-            border: Border(
-              bottom: BorderSide(
-                color: _kBorder.withValues(alpha: 0.3),
-              ),
-            ),
-          ),
-          child: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    'Nira',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 24,
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: 1,
-                    ),
-                  ),
-                  _buildSosButton(context),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
+      appBar: const NiraAppBar(),
       body: Stack(
         children: [
           // 1. O GLOW ROXO DE FUNDO
@@ -83,16 +50,16 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             ),
           ),
 
-          // 2. A IMAGEM DO PERSONAGEM (image_e1d73f.png)
+          // 2. A IMAGEM DO PERSONAGEM (image_e1d73f.png) - Responsiva
           Positioned(
-            top: screenSize.height * 0.12, // Desce mais para cobrir até bottom nav
-            left: 0,
-            right: 0,
-            bottom: 0,
+            top: screenSize.height * 0.08, // Começa um pouco abaixo do navbar
+            left: -screenSize.width * 0.15, // Sai um pouco da esquerda
+            right: -screenSize.width * 0.15, // Sai um pouco da direita
+            bottom: -screenSize.height * 0.1, // Desce além da bottom nav
             child: Opacity(
-              opacity: 0.9,
+              opacity: 0.95,
               child: Image.asset(
-                'assets/images/home-img.png', // Certifique-se do caminho
+                'assets/images/home-img.png',
                 fit: BoxFit.cover,
                 alignment: Alignment.center,
               ),
@@ -137,45 +104,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  // ── S.O.S. BUTTON (AppBar) ────────────────────────────────────────────────
-  Widget _buildSosButton(BuildContext context) {
-    return InkWell(
-      onTap: () => GoRouter.of(context)
-          .go('/chat', extra: {'sos': true, 'start': true}),
-      borderRadius: BorderRadius.circular(20),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-        decoration: BoxDecoration(
-          color: _kEmergency.withValues(alpha: 0.15),
-          border: Border.all(
-            color: _kEmergency.withValues(alpha: 0.4),
-          ),
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              LucideIcons.alertTriangle,
-              color: _kEmergency,
-              size: 16,
-            ),
-            const SizedBox(width: 6),
-            const Text(
-              'S.O.S',
-              style: TextStyle(
-                color: _kEmergency,
-                fontSize: 12,
-                fontWeight: FontWeight.w900,
-                letterSpacing: 1.2,
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:go_router/go_router.dart';
 import '../widgets/nira_glass_card.dart';
+import '../widgets/nira_app_bar.dart';
 
 // ── Paleta de marca ────────────────────────────────────────────────────────
 const _kBrandPrimary = Color(0xFF8B7EFA);
@@ -20,6 +21,7 @@ class SobreScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: _kBgMain,
+      appBar: const NiraAppBar(title: 'Sobre'),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,

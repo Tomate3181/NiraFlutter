@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:go_router/go_router.dart';
 import '../widgets/nira_glass_card.dart';
+import '../widgets/nira_app_bar.dart';
 import '../services/nira_supabase_service.dart';
 import '../models/nira_models.dart';
 import 'package:geolocator/geolocator.dart';
@@ -372,6 +373,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
 
     return Scaffold(
       backgroundColor: const Color(0xFF111119),
+      appBar: const NiraAppBar(title: 'Chat'),
       body: Stack(
         children: [
           Row(
